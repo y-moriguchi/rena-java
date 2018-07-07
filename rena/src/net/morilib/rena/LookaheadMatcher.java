@@ -13,7 +13,7 @@ public interface LookaheadMatcher<A> extends ThenMatcher<A> {
 	public default LookaheadMatcher<A> lookahead(final OperationMatcher<A> matcher) {
 		return new LookaheadMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {
-				PatternResult<A> result1 = match(match, index, attribute);
+				PatternResult<A> result1 = LookaheadMatcher.this.match(match, index, attribute);
 
 				if(result1 == null) {
 					return null;
@@ -33,7 +33,7 @@ public interface LookaheadMatcher<A> extends ThenMatcher<A> {
 	public default LookaheadMatcher<A> lookaheadNot(final OperationMatcher<A> matcher) {
 		return new LookaheadMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {
-				PatternResult<A> result1 = match(match, index, attribute);
+				PatternResult<A> result1 = LookaheadMatcher.this.match(match, index, attribute);
 
 				if(result1 == null) {
 					return null;

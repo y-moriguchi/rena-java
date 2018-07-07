@@ -10,9 +10,7 @@ package net.morilib.rena;
 
 import java.util.function.Predicate;
 
-public interface OperationMatcher<A> {
-
-	public PatternResult<A> match(String match, int index, A attribute);
+public interface OperationMatcher<A> extends PatternMatcher<A> {
 
 	public int skipSpace(String match, int index);
 

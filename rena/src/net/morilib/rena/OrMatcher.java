@@ -15,7 +15,7 @@ public interface OrMatcher<A> extends OperationMatcher<A> {
 			public PatternResult<A> match(String match, int index, A attribute) {
 				PatternResult<A> result1, result2;
 
-				if((result1 = match(match, index, attribute)) != null) {
+				if((result1 = OrMatcher.this.match(match, index, attribute)) != null) {
 					return result1;
 				} else if((result2 = matcher.match(match, index, attribute)) != null) {
 					return result2;
