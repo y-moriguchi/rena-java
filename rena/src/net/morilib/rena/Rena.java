@@ -11,6 +11,7 @@ package net.morilib.rena;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +50,11 @@ public class Rena<A> {
 			return matched != null && matched.equals(key);
 		}
 
+	}
+
+	@FunctionalInterface
+	private static interface ILetrec<A> {
+		public A apply(ILetrec<A> f);
 	}
 
 	private Pattern patternToIgnore;
@@ -200,6 +206,14 @@ public class Rena<A> {
 				}
 			}
 		};
+	}
+
+	public static<A> PatternMatcher<A> letrec(
+			final Function<PatternMatcher<A>, PatternMatcher<A>> func) {
+		ILetrec<PatternMatcher<A>> f = g -> g.apply(g);
+		ILetrec<PatternMatcher<A>> h = g -> func.apply((match, index, attr) -> g.apply(g).match(match, index, attr));
+
+		return f.apply(h);
 	}
 
 }

@@ -10,7 +10,7 @@ package net.morilib.rena;
 
 public interface OrMatcher<A> extends OperationMatcher<A> {
 
-	public default OrMatcher<A> or(final OperationMatcher<A> matcher) {
+	public default OrMatcher<A> or(final PatternMatcher<A> matcher) {
 		return new ThenMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {
 				PatternResult<A> result1, result2;

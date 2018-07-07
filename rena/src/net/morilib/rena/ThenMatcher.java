@@ -10,7 +10,7 @@ package net.morilib.rena;
 
 public interface ThenMatcher<A> extends OrMatcher<A> {
 
-	public default ThenMatcher<A> then(final OperationMatcher<A> matcher, final PatternAction<A> action) {
+	public default ThenMatcher<A> then(final PatternMatcher<A> matcher, final PatternAction<A> action) {
 		return new ThenMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {
 				PatternResult<A> result1 = ThenMatcher.this.match(match, index, attribute), result2;
@@ -39,7 +39,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 		};
 	}
 
-	public default ThenMatcher<A> then(final OperationMatcher<A> matcher) {
+	public default ThenMatcher<A> then(final PatternMatcher<A> matcher) {
 		return then(matcher, null);
 	}
 

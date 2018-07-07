@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 
 public class TestCaseBase extends TestCase {
 
-	protected<A> void match(String toMatch, OperationMatcher<A> matcher, String match, int lastIndex, A init, A attr) {
+	protected<A> void match(String toMatch, PatternMatcher<A> matcher, String match, int lastIndex, A init, A attr) {
 		PatternResult<A> result = matcher.match(toMatch, 0, init);
 		if(result == null) {
 			fail("not matched");
@@ -22,7 +22,7 @@ public class TestCaseBase extends TestCase {
 		assertEquals(result.getAttribute(), attr);
 	}
 
-	protected<A> void nomatch(String toMatch, OperationMatcher<A> matcher) {
+	protected<A> void nomatch(String toMatch, PatternMatcher<A> matcher) {
 		PatternResult<A> result = matcher.match(toMatch, 0, null);
 		assertNull(result);
 	}

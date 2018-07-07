@@ -10,7 +10,7 @@ package net.morilib.rena;
 
 public interface LookaheadMatcher<A> extends ThenMatcher<A> {
 
-	public default LookaheadMatcher<A> lookahead(final OperationMatcher<A> matcher) {
+	public default LookaheadMatcher<A> lookahead(final PatternMatcher<A> matcher) {
 		return new LookaheadMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {
 				PatternResult<A> result1 = LookaheadMatcher.this.match(match, index, attribute);
@@ -30,7 +30,7 @@ public interface LookaheadMatcher<A> extends ThenMatcher<A> {
 		};
 	}
 
-	public default LookaheadMatcher<A> lookaheadNot(final OperationMatcher<A> matcher) {
+	public default LookaheadMatcher<A> lookaheadNot(final PatternMatcher<A> matcher) {
 		return new LookaheadMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {
 				PatternResult<A> result1 = LookaheadMatcher.this.match(match, index, attribute);

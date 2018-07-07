@@ -83,4 +83,15 @@ public class RenaTest extends TestCaseBase {
 		nomatch("-", matcher);
 	}
 
+	public void testLetrec001() {
+		final Rena<String> r = new Rena<String>();
+		PatternMatcher<String> matcher =
+				Rena.letrec(x -> r.matcher(r.string("(").then(x).then(r.string(")"))).maybe());
+
+		match("()", matcher, "()", 2, "", "");
+		match("((()))", matcher, "((()))", 6, "", "");
+		match("", matcher, "", 0, "", "");
+		match("(()", matcher, "", 0, "", "");
+	}
+
 }
