@@ -94,4 +94,62 @@ public class RenaTest extends TestCaseBase {
 		match("(()", matcher, "", 0, "", "");
 	}
 
+	public void testLetrec002() {
+		final Rena<String> r = new Rena<String>();
+		PatternMatcher<String> matcher =
+				Rena.letrec((x, y) -> r.matcher(r.string("(").then(y).then(r.string(")"))).maybe(),
+						(x, y) -> r.matcher(r.string("[").then(x).then(r.string("]"))).maybe());
+
+		match("()", matcher, "()", 2, "", "");
+		match("([()])", matcher, "([()])", 6, "", "");
+		match("", matcher, "", 0, "", "");
+		match("(()", matcher, "", 0, "", "");
+		match("(())", matcher, "", 0, "", "");
+	}
+
+	public void testLetrec003() {
+		final Rena<String> r = new Rena<String>();
+		PatternMatcher<String> matcher =
+				Rena.letrec((x, y, z) -> r.matcher(r.string("(").then(y).then(r.string(")"))).maybe(),
+						(x, y, z) -> r.matcher(r.string("[").then(z).then(r.string("]"))).maybe(),
+						(x, y, z) -> r.matcher(r.string("{").then(x).then(r.string("}"))).maybe());
+
+		match("()", matcher, "()", 2, "", "");
+		match("([{()}])", matcher, "([{()}])", 8, "", "");
+		match("", matcher, "", 0, "", "");
+		match("(()", matcher, "", 0, "", "");
+		match("([()])", matcher, "", 0, "", "");
+	}
+
+	public void testLetrec004() {
+		final Rena<String> r = new Rena<String>();
+		PatternMatcher<String> matcher =
+				Rena.letrec((x, y, z, w) -> r.matcher(r.string("(").then(y).then(r.string(")"))).maybe(),
+						(x, y, z, w) -> r.matcher(r.string("[").then(z).then(r.string("]"))).maybe(),
+						(x, y, z, w) -> r.matcher(r.string("{").then(w).then(r.string("}"))).maybe(),
+						(x, y, z, w) -> r.matcher(r.string("<").then(x).then(r.string(">"))).maybe());
+
+		match("()", matcher, "()", 2, "", "");
+		match("([{<()>}])", matcher, "([{<()>}])", 10, "", "");
+		match("", matcher, "", 0, "", "");
+		match("(()", matcher, "", 0, "", "");
+		match("([{()}])", matcher, "", 0, "", "");
+	}
+
+	public void testLetrec005() {
+		final Rena<String> r = new Rena<String>();
+		PatternMatcher<String> matcher =
+				Rena.letrec((x, y, z, w, v) -> r.matcher(r.string("(").then(y).then(r.string(")"))).maybe(),
+						(x, y, z, w, v) -> r.matcher(r.string("[").then(z).then(r.string("]"))).maybe(),
+						(x, y, z, w, v) -> r.matcher(r.string("{").then(w).then(r.string("}"))).maybe(),
+						(x, y, z, w, v) -> r.matcher(r.string("<").then(v).then(r.string(">"))).maybe(),
+						(x, y, z, w, v) -> r.matcher(r.string("|").then(x).then(r.string("|"))).maybe());
+
+		match("()", matcher, "()", 2, "", "");
+		match("([{<|()|>}])", matcher, "([{<|()|>}])", 12, "", "");
+		match("", matcher, "", 0, "", "");
+		match("(()", matcher, "", 0, "", "");
+		match("([{<()>}])", matcher, "", 0, "", "");
+	}
+
 }

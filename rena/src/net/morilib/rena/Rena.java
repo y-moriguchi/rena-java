@@ -8,9 +8,11 @@
  **/
 package net.morilib.rena;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,6 +57,11 @@ public class Rena<A> {
 	@FunctionalInterface
 	private static interface ILetrec<A> {
 		public A apply(ILetrec<A> f);
+	}
+
+	@FunctionalInterface
+	private static interface ILetrecn<A> {
+		public List<A> apply(ILetrecn<A> f);
 	}
 
 	private Pattern patternToIgnore;
@@ -214,6 +221,92 @@ public class Rena<A> {
 		ILetrec<PatternMatcher<A>> h = g -> func.apply((match, index, attr) -> g.apply(g).match(match, index, attr));
 
 		return f.apply(h);
+	}
+
+	public static<A> PatternMatcher<A> letrec(
+			final BiFunction<PatternMatcher<A>, PatternMatcher<A>, PatternMatcher<A>> func1,
+			final BiFunction<PatternMatcher<A>, PatternMatcher<A>, PatternMatcher<A>> func2) {
+		ILetrecn<PatternMatcher<A>> f = g -> g.apply(g);
+		ILetrecn<PatternMatcher<A>> h = g -> {
+			List<PatternMatcher<A>> result = new ArrayList<PatternMatcher<A>>();
+			PatternMatcher<A> x1 = (match, index, attr) -> g.apply(g).get(0).match(match, index, attr);
+			PatternMatcher<A> x2 = (match, index, attr) -> g.apply(g).get(1).match(match, index, attr);
+
+			result.add(func1.apply(x1, x2));
+			result.add(func2.apply(x1, x2));
+			return result;
+		};
+
+		return f.apply(h).get(0);
+	}
+
+	public static<A> PatternMatcher<A> letrec(
+			final Letrec3Function<A> func1,
+			final Letrec3Function<A> func2,
+			final Letrec3Function<A> func3) {
+		ILetrecn<PatternMatcher<A>> f = g -> g.apply(g);
+		ILetrecn<PatternMatcher<A>> h = g -> {
+			List<PatternMatcher<A>> result = new ArrayList<PatternMatcher<A>>();
+			PatternMatcher<A> x1 = (match, index, attr) -> g.apply(g).get(0).match(match, index, attr);
+			PatternMatcher<A> x2 = (match, index, attr) -> g.apply(g).get(1).match(match, index, attr);
+			PatternMatcher<A> x3 = (match, index, attr) -> g.apply(g).get(2).match(match, index, attr);
+
+			result.add(func1.apply(x1, x2, x3));
+			result.add(func2.apply(x1, x2, x3));
+			result.add(func3.apply(x1, x2, x3));
+			return result;
+		};
+
+		return f.apply(h).get(0);
+	}
+
+	public static<A> PatternMatcher<A> letrec(
+			final Letrec4Function<A> func1,
+			final Letrec4Function<A> func2,
+			final Letrec4Function<A> func3,
+			final Letrec4Function<A> func4) {
+		ILetrecn<PatternMatcher<A>> f = g -> g.apply(g);
+		ILetrecn<PatternMatcher<A>> h = g -> {
+			List<PatternMatcher<A>> result = new ArrayList<PatternMatcher<A>>();
+			PatternMatcher<A> x1 = (match, index, attr) -> g.apply(g).get(0).match(match, index, attr);
+			PatternMatcher<A> x2 = (match, index, attr) -> g.apply(g).get(1).match(match, index, attr);
+			PatternMatcher<A> x3 = (match, index, attr) -> g.apply(g).get(2).match(match, index, attr);
+			PatternMatcher<A> x4 = (match, index, attr) -> g.apply(g).get(3).match(match, index, attr);
+
+			result.add(func1.apply(x1, x2, x3, x4));
+			result.add(func2.apply(x1, x2, x3, x4));
+			result.add(func3.apply(x1, x2, x3, x4));
+			result.add(func4.apply(x1, x2, x3, x4));
+			return result;
+		};
+
+		return f.apply(h).get(0);
+	}
+
+	public static<A> PatternMatcher<A> letrec(
+			final Letrec5Function<A> func1,
+			final Letrec5Function<A> func2,
+			final Letrec5Function<A> func3,
+			final Letrec5Function<A> func4,
+			final Letrec5Function<A> func5) {
+		ILetrecn<PatternMatcher<A>> f = g -> g.apply(g);
+		ILetrecn<PatternMatcher<A>> h = g -> {
+			List<PatternMatcher<A>> result = new ArrayList<PatternMatcher<A>>();
+			PatternMatcher<A> x1 = (match, index, attr) -> g.apply(g).get(0).match(match, index, attr);
+			PatternMatcher<A> x2 = (match, index, attr) -> g.apply(g).get(1).match(match, index, attr);
+			PatternMatcher<A> x3 = (match, index, attr) -> g.apply(g).get(2).match(match, index, attr);
+			PatternMatcher<A> x4 = (match, index, attr) -> g.apply(g).get(3).match(match, index, attr);
+			PatternMatcher<A> x5 = (match, index, attr) -> g.apply(g).get(4).match(match, index, attr);
+
+			result.add(func1.apply(x1, x2, x3, x4, x5));
+			result.add(func2.apply(x1, x2, x3, x4, x5));
+			result.add(func3.apply(x1, x2, x3, x4, x5));
+			result.add(func4.apply(x1, x2, x3, x4, x5));
+			result.add(func5.apply(x1, x2, x3, x4, x5));
+			return result;
+		};
+
+		return f.apply(h).get(0);
 	}
 
 }
