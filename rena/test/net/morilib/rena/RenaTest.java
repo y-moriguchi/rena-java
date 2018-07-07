@@ -53,4 +53,34 @@ public class RenaTest extends TestCaseBase {
 		nomatch("8765", matcher);
 	}
 
+	public void testKey001() {
+		Rena<String> r = new Rena<String>(new String[] { "+", "++", "//" });
+		OperationMatcher<String> matcher = r.key("++");
+
+		match("++", matcher, "++", 2, "", "");
+		match("+++", matcher, "++", 2, "", "");
+		nomatch("+", matcher);
+		nomatch("-", matcher);
+	}
+
+	public void testKey002() {
+		Rena<String> r = new Rena<String>(new String[] { "+", "++", "//" });
+		OperationMatcher<String> matcher = r.key("+");
+
+		match("+", matcher, "+", 1, "", "");
+		nomatch("++", matcher);
+		nomatch("-", matcher);
+	}
+
+	public void testKey003() {
+		Rena<String> r = new Rena<String>(new String[] { "+", "++", "//" });
+		OperationMatcher<String> matcher = r.key("//");
+
+		match("//", matcher, "//", 2, "", "");
+		match("///", matcher, "//", 2, "", "");
+		nomatch("/", matcher);
+		nomatch("++", matcher);
+		nomatch("-", matcher);
+	}
+
 }
