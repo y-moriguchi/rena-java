@@ -16,34 +16,31 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 
 	public default OperationMatcher<A> times(final int countmin,
 			final int countmax,
-			final PatternAction<A> action,
-			final A init) {
+			final PatternAction<A> action) {
+		if(countmin < 0) {
+			throw new IllegalArgumentException("minimum of repetition must be non negative");
+		} else if(countmin == 0 && countmax == 0) {
+			throw new IllegalArgumentException("both minimum and maximum must not be all zero");
+		} else if(countmax >= 0 && (countmin > countmax)) {
+			throw new IllegalArgumentException("minimum must be less than or equal to maximum");
+		}
 		return new OperationMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {
 				PatternResult<A> result;
-				String matched = "";
 				int lastIndex = index;
-				A attr = init == null ? attribute : init;
-	
-				if(countmin < 0) {
-					throw new IllegalArgumentException("minimum of repetition must be non negative");
-				} else if(countmin == 0 && countmax == 0) {
-					throw new IllegalArgumentException("both minimum and maximum must not be all zero");
-				} else if(countmax >= 0 && (countmin > countmax)) {
-					throw new IllegalArgumentException("minimum must be less than or equal to maximum");
-				}
-	
+				A attr = attribute;
+
 				for(int i = 0; countmax < 0 || i < countmax; i++) {
-					if((result = match(match, lastIndex, attr)) == null) {
-						return i < countmin ? null : new PatternResult<A>(matched, lastIndex, attr);
+					lastIndex = skipSpace(match, lastIndex);
+					if((result = OperationMatcher.this.match(match, lastIndex, attr)) == null) {
+						return i < countmin ? null : new PatternResult<A>(match.substring(index, lastIndex), lastIndex, attr);
 					}
-					matched = matched + result.getMatch();
 					lastIndex = result.getLastIndex();
 					if(action != null) {
 						attr = action.action(result.getMatch(), result.getAttribute(), attr);
 					}
 				}
-				return new PatternResult<A>(matched, lastIndex, attr);
+				return new PatternResult<A>(match.substring(index, lastIndex), lastIndex, attr);
 			}
 
 			public int skipSpace(String match, int index) {
@@ -53,75 +50,83 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	}
 
 	public default OperationMatcher<A> times(final int countmin,
-			final int countmax,
-			final PatternAction<A> action) {
-		return times(countmin, countmax, action, null);
-	}
-
-	public default OperationMatcher<A> atLeast(final int count, final PatternAction<A> action, final A init) {
-		return times(count, -1, action, init);
+			final int countmax) {
+		return times(countmin, countmax, null);
 	}
 
 	public default OperationMatcher<A> atLeast(final int count, final PatternAction<A> action) {
-		return times(count, -1, action, null);
+		return times(count, -1, action);
 	}
 
-	public default OperationMatcher<A> atMost(final int count, final PatternAction<A> action, final A init) {
-		return times(0, count, action, init);
+	public default OperationMatcher<A> atLeast(final int count) {
+		return times(count, -1, null);
 	}
 
 	public default OperationMatcher<A> atMost(final int count, final PatternAction<A> action) {
-		return times(0, count, action, null);
+		return times(0, count, action);
 	}
 
-	public default OperationMatcher<A> maybe(final PatternAction<A> action, final A init) {
-		return times(0, 1, action, init);
+	public default OperationMatcher<A> atMost(final int count) {
+		return times(0, count, null);
 	}
 
 	public default OperationMatcher<A> maybe(final PatternAction<A> action) {
-		return times(0, 1, action, null);
+		return times(0, 1, action);
 	}
 
-	public default OperationMatcher<A> zeroOrMore(final PatternAction<A> action, final A init) {
-		return times(0, -1, action, init);
+	public default OperationMatcher<A> maybe() {
+		return times(0, 1, null);
 	}
 
 	public default OperationMatcher<A> zeroOrMore(final PatternAction<A> action) {
-		return times(0, -1, action, null);
+		return times(0, -1, action);
 	}
 
-	public default OperationMatcher<A> oneOrMore(final PatternAction<A> action, final A init) {
-		return times(1, -1, action, init);
+	public default OperationMatcher<A> zeroOrMore() {
+		return times(0, -1, null);
 	}
 
 	public default OperationMatcher<A> oneOrMore(final PatternAction<A> action) {
-		return times(1, -1, action, null);
+		return times(1, -1, action);
+	}
+
+	public default OperationMatcher<A> oneOrMore() {
+		return times(1, -1, null);
 	}
 
 	public default OperationMatcher<A> delimit(final String delimiter,
-			final PatternAction<A> action,
-			final A init) {
+			final PatternAction<A> action) {
 		return new OperationMatcher<A>() {
+			private PatternResult<A> isMatched(String match, int index, A attr) {
+				int lastIndex = index;
+
+				if(!match.startsWith(delimiter, index)) {
+					return null;
+				}
+				lastIndex = skipSpace(match, lastIndex + delimiter.length());
+				return OperationMatcher.this.match(match, lastIndex, attr);
+			}
+
 			public PatternResult<A> match(String match, int index, A attribute) {
 				PatternResult<A> result;
-				String matched = "";
-				int lastIndex = index;
-				A attr = init == null ? attribute : init;
+				int lastIndex;
+				A attr = attribute;
 
+				if((result = OperationMatcher.this.match(match, index, attr)) == null) {
+					return null;
+				}
+				lastIndex = result.getLastIndex();
+				if(action != null) {
+					attr = action.action(result.getMatch(), result.getAttribute(), attr);
+				}
 				while(true) {
-					if((result = match(match, lastIndex, attr)) == null) {
-						return new PatternResult<A>(matched, lastIndex, attr);
+					if((result = isMatched(match, lastIndex, attr)) == null) {
+						return new PatternResult<A>(match.substring(index, lastIndex), lastIndex, attr);
 					}
-					matched = matched + result.getMatch();
-					lastIndex = result.getLastIndex();
+					lastIndex = skipSpace(match, result.getLastIndex());
 					if(action != null) {
 						attr = action.action(result.getMatch(), result.getAttribute(), attr);
 					}
-					if(match.startsWith(delimiter, result.getLastIndex())) {
-						return new PatternResult<A>(matched, lastIndex, attr);
-					}
-					matched = matched + delimiter;
-					lastIndex += delimiter.length();
 				}
 			}
 
@@ -131,51 +136,16 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 		};
 	}
 
-	public default OperationMatcher<A> delimit(final String delimiter, final PatternAction<A> action) {
-		return delimit(delimiter, action, null);
+	public default OperationMatcher<A> delimit(final String delimiter) {
+		return delimit(delimiter, null);
 	}
 
 	public default OperationMatcher<A> cond(final Predicate<A> cond) {
 		return new OperationMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {
-				PatternResult<A> result = match(match, index, attribute);
+				PatternResult<A> result = OperationMatcher.this.match(match, index, attribute);
 
 				return result != null && cond.test(result.getAttribute()) ? result : null;
-			}
-
-			public int skipSpace(String match, int index) {
-				return OperationMatcher.this.skipSpace(match, index);
-			}
-		};
-	}
-
-	public default OperationMatcher<A> attr(final A attr) {
-		return new OperationMatcher<A>() {
-			public PatternResult<A> match(String match, int index, A attribute) {
-				PatternResult<A> result = match(match, index, attribute);
-
-				return result != null ?
-						new PatternResult<A>(result.getMatch(), result.getLastIndex(), attr) : null;
-			}
-
-			public int skipSpace(String match, int index) {
-				return OperationMatcher.this.skipSpace(match, index);
-			}
-		};
-	}
-
-	public default OperationMatcher<A> action(final PatternAction<A> action) {
-		return new OperationMatcher<A>() {
-			public PatternResult<A> match(String match, int index, A attribute) {
-				PatternResult<A> result = match(match, index, attribute);
-
-				if(result == null) {
-					return null;
-				} else {
-					A attrNew = action.action(result.getMatch(), result.getAttribute(), attribute);
-
-					return new PatternResult<A>(result.getMatch(), result.getLastIndex(), attrNew);
-				}
 			}
 
 			public int skipSpace(String match, int index) {

@@ -27,4 +27,13 @@ public class TestCaseBase extends TestCase {
 		assertNull(result);
 	}
 
+	protected void assertArgumentException(Runnable runnable) {
+		try {
+			runnable.run();
+			fail("not throwed");
+		} catch(IllegalArgumentException ex) {
+			// ok
+		}
+	}
+
 }
