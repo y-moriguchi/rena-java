@@ -38,6 +38,21 @@ public class Rena<A> {
 		}
 	}
 
+	private class InitAttr extends RenaImpl {
+
+		private A init;
+
+		private InitAttr(A init) {
+			this.init = init;
+		}
+
+		@Override
+		public PatternResult<A> match(String match, int index, A attribute) {
+			return new PatternResult<A>(match, index, init);
+		}
+
+	}
+
 	private static class TrieNode {
 
 		private Map<Integer, TrieNode> edges = new HashMap<Integer, TrieNode>();
@@ -54,10 +69,6 @@ public class Rena<A> {
 			return edges.get(ch);
 		}
 
-		private boolean match(String key) {
-			return matched != null && matched.equals(key);
-		}
-
 	}
 
 	@FunctionalInterface
@@ -70,8 +81,13 @@ public class Rena<A> {
 		public List<A> apply(ILetrecn<A> f);
 	}
 
+	private static final String REAL_NO_SIGN =
+			"(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][\\+\\-]?[0-9]+)?";
+	private static final String REAL_WITH_SIGN =
+			"[\\+\\-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][\\+\\-]?[0-9]+)?";
+
 	private Pattern patternToIgnore;
-	private TrieNode node = new TrieNode();
+	private TrieNode node;
 
 	/**
 	 * Constructs a class to create parser definition with default settings.
@@ -94,6 +110,7 @@ public class Rena<A> {
 	 * @param keys an array of keywords
 	 */
 	public Rena(String[] keys) {
+		node = new TrieNode();
 		for(String key : keys) {
 			addKeyword(key);
 		}
@@ -137,7 +154,9 @@ public class Rena<A> {
 	private void addKeyword(String key) {
 		TrieNode node = this.node;
 
-		if(key == null || key.equals("")) {
+		if(node == null) {
+			throw new IllegalStateException();
+		} else if(key == null || key.equals("")) {
 			throw new IllegalArgumentException("key must not be empty");
 		}
 		for(int i = 0; i < key.length(); i++) {
@@ -151,20 +170,29 @@ public class Rena<A> {
 		node.matched = key;
 	}
 
-	private int matchKeyword(String key, String toMatch, int index) {
+	private String searchKeyword(String toMatch, int index) {
 		TrieNode node = this.node;
 		int i;
 
+		if(node == null) {
+			return null;
+		}
 		for(i = index; i < toMatch.length(); i++) {
 			int ch = toMatch.charAt(i);
 
 			if(node.contains(ch)) {
 				node = node.get(ch);
 			} else {
-				return node.match(key) ? i : -1;
+				return node.matched;
 			}
 		}
-		return node.match(key) ? i : -1;
+		return node.matched;
+	}
+
+	private int matchKeyword(String key, String toMatch, int index) {
+		String result = searchKeyword(toMatch, index);
+
+		return result != null && result.equals(key) ? index + result.length() : -1;
 	}
 
 	/**
@@ -301,6 +329,142 @@ public class Rena<A> {
 				}
 			}
 		};
+	}
+
+	public LookaheadMatcher<A> notKey(final String key) {
+		return new RenaImpl() {
+			@Override
+			public PatternResult<A> match(String match, int index, A attribute) {
+				if(searchKeyword(match, index) == null) {
+					return new PatternResult<A>("", index, attribute);
+				} else {
+					return null;
+				}
+			}
+		};
+	}
+
+	public LookaheadMatcher<A> br() {
+		return regex("\r\n|\r|\n");
+	}
+
+	public LookaheadMatcher<A> equalsId(final String id) {
+		return string(id)
+				.lookahead((str, index, attr) -> {
+					PatternResult<A> result = new PatternResult<A>("", index, null);
+					if(index == str.length()) {
+						return result;
+					} else if(patternToIgnore == null || node == null) {
+						return result;
+					} else if(patternToIgnore != null &&
+							patternToIgnore.matcher(str.substring(index)).lookingAt()) {
+						return result;
+					} else if(node != null && searchKeyword(str, index) != null) {
+						return result;
+					} else {
+						return null;
+					}
+				});
+	}
+
+	public LookaheadMatcher<A> real(boolean signum, final PatternAction<A> action) {
+		return regex(signum ? REAL_WITH_SIGN : REAL_NO_SIGN, action);
+	}
+
+	public OrMatcher<A> or(PatternMatcher<A> arg1, PatternMatcher<A> arg2) {
+		return then(arg1).or(arg2);
+	}
+
+	public OrMatcher<A> or(PatternMatcher<A> arg1,
+			PatternMatcher<A> arg2,
+			PatternMatcher<A> arg3) {
+		return then(arg1).or(arg2).or(arg3);
+	}
+
+	public OrMatcher<A> or(PatternMatcher<A> arg1,
+			PatternMatcher<A> arg2,
+			PatternMatcher<A> arg3,
+			PatternMatcher<A> arg4) {
+		return then(arg1).or(arg2).or(arg3).or(arg4);
+	}
+
+	public OrMatcher<A> or(List<PatternMatcher<A>> args) {
+		OrMatcher<A> result;
+
+		if(args.size() == 0) {
+			throw new IllegalArgumentException("too few arguments");
+		}
+		result = then(args.get(0));
+		for(int i = 1; i < args.size(); i++) {
+			result = result.or(args.get(i));
+		}
+		return result;
+	}
+
+	public OperationMatcher<A> times(int countmin, int countmax, PatternMatcher<A> pattern,
+			PatternAction<A> action, A init) {
+		return new InitAttr(init).then(then(pattern).times(countmin, countmax, action));
+	}
+
+	public OperationMatcher<A> times(int countmin, int countmax, PatternMatcher<A> pattern,
+			PatternAction<A> action) {
+		return then(pattern).times(countmin, countmax, action);
+	}
+
+	public OperationMatcher<A> atLeast(int count, PatternMatcher<A> pattern,
+			PatternAction<A> action, A init) {
+		return new InitAttr(init).then(then(pattern).atLeast(count, action));
+	}
+
+	public OperationMatcher<A> atLeast(int count, PatternMatcher<A> pattern,
+			PatternAction<A> action) {
+		return then(pattern).atLeast(count, action);
+	}
+
+	public OperationMatcher<A> atMost(int count, PatternMatcher<A> pattern,
+			PatternAction<A> action, A init) {
+		return new InitAttr(init).then(then(pattern).atMost(count, action));
+	}
+
+	public OperationMatcher<A> atMost(int count, PatternMatcher<A> pattern,
+			PatternAction<A> action) {
+		return then(pattern).atMost(count, action);
+	}
+
+	public OperationMatcher<A> maybe(PatternMatcher<A> pattern, PatternAction<A> action) {
+		return then(pattern).maybe(action);
+	}
+
+	public OperationMatcher<A> zeroOrMore(PatternMatcher<A> pattern,
+			PatternAction<A> action, A init) {
+		return new InitAttr(init).then(then(pattern).zeroOrMore(action));
+	}
+
+	public OperationMatcher<A> zeroOrMore(PatternMatcher<A> pattern, PatternAction<A> action) {
+		return then(pattern).zeroOrMore(action);
+	}
+
+	public OperationMatcher<A> oneOrMore(PatternMatcher<A> pattern,
+			PatternAction<A> action, A init) {
+		return new InitAttr(init).then(then(pattern).oneOrMore(action));
+	}
+
+	public OperationMatcher<A> oneOrMore(PatternMatcher<A> pattern, PatternAction<A> action) {
+		return then(pattern).oneOrMore(action);
+	}
+
+	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, String delimiter,
+			PatternAction<A> action, A init) {
+		return new InitAttr(init).then(then(pattern).delimit(delimiter, action));
+	}
+
+	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, String delimiter,
+			PatternAction<A> action) {
+		return then(pattern).delimit(delimiter, action);
+	}
+
+	public LookaheadMatcher<A> attr(A attr) {
+		return new InitAttr(attr);
 	}
 
 	/**

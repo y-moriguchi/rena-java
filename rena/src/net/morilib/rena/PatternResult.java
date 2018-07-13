@@ -41,6 +41,13 @@ public class PatternResult<A> {
 	}
 
 	/**
+	 * gets start index of matching.
+	 */
+	public int getStartIndex() {
+		return lastIndex - match.length();
+	}
+
+	/**
 	 * gets last index of matching.
 	 */
 	public int getLastIndex() {
