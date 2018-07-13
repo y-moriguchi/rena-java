@@ -5,15 +5,37 @@
  *
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
- **/
+ */
 package net.morilib.rena;
 
 import java.util.function.Predicate;
 
+/**
+ * An interface with operations for matchers.
+ * 
+ * @author Yuichiro MORIGUCHI
+ * @param <A> attribute
+ */
 public interface OperationMatcher<A> extends PatternMatcher<A> {
 
+	/**
+	 * skips a space of the given string.
+	 * 
+	 * @param match a string to match
+	 * @param index a starting index
+	 * @return a last index of skipping
+	 */
 	public int skipSpace(String match, int index);
 
+	/**
+	 * repeats the given patterns to the given count.<br>
+	 * This method is NOT backtracking.
+	 *
+	 * @param countmin minimum of repetation
+	 * @param countmax maximum of repetation
+	 * @param action an action to be invoked
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> times(final int countmin,
 			final int countmax,
 			final PatternAction<A> action) {
@@ -49,51 +71,136 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 		};
 	}
 
+	/**
+	 * repeats the given patterns to the given count.<br>
+	 * This method is NOT backtracking.
+	 *
+	 * @param countmin minimum of repetation
+	 * @param countmax maximum of repetation
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> times(final int countmin,
 			final int countmax) {
 		return times(countmin, countmax, null);
 	}
 
+	/**
+	 * repeats the given patterns at least the given count.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param count minimum of repetation
+	 * @param action an action to be invoked
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> atLeast(final int count, final PatternAction<A> action) {
 		return times(count, -1, action);
 	}
 
+	/**
+	 * repeats the given patterns at least the given count.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param count minimum of repetation
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> atLeast(final int count) {
 		return times(count, -1, null);
 	}
 
+	/**
+	 * repeats the given patterns at most the given count.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param count maximum of repetation
+	 * @param action an action to be invoked
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> atMost(final int count, final PatternAction<A> action) {
 		return times(0, count, action);
 	}
 
+	/**
+	 * repeats the given patterns at most the given count.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param count maximum of repetation
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> atMost(final int count) {
 		return times(0, count, null);
 	}
 
+	/**
+	 * matches zero or one of the given patterns.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param action an action to be invoked
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> maybe(final PatternAction<A> action) {
 		return times(0, 1, action);
 	}
 
+	/**
+	 * matches zero or one of the given patterns.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> maybe() {
 		return times(0, 1, null);
 	}
 
+	/**
+	 * a shortcut of 'atLeast(0, action)'.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param action an action to be invoked
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> zeroOrMore(final PatternAction<A> action) {
 		return times(0, -1, action);
 	}
 
+	/**
+	 * a shortcut of 'atLeast(0, action)'.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> zeroOrMore() {
 		return times(0, -1, null);
 	}
 
+	/**
+	 * a shortcut of 'atLeast(1, action)'.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param action an action to be invoked
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> oneOrMore(final PatternAction<A> action) {
 		return times(1, -1, action);
 	}
 
+	/**
+	 * a shortcut of 'atLeast(1, action)'.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> oneOrMore() {
 		return times(1, -1, null);
 	}
 
+	/**
+	 * matches a string which is delimited by the given string.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param delimiter a pattern of delimiter
+	 * @param action an action to be invoked
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> delimit(final String delimiter,
 			final PatternAction<A> action) {
 		return new OperationMatcher<A>() {
@@ -136,10 +243,23 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 		};
 	}
 
+	/**
+	 * matches a string which is delimited by the given string.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param delimiter a pattern of delimiter
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> delimit(final String delimiter) {
 		return delimit(delimiter, null);
 	}
 
+	/**
+	 * matches the pattern if the given condition is true.
+	 * 
+	 * @param cond the condition
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> cond(final Predicate<A> cond) {
 		return new OperationMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {
@@ -154,6 +274,11 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 		};
 	}
 
+	/**
+	 * matches end of string.
+	 * 
+	 * @return this instance
+	 */
 	public default OperationMatcher<A> end() {
 		return new OperationMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {

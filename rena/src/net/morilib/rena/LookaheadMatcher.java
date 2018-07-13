@@ -5,11 +5,23 @@
  *
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
- **/
+ */
 package net.morilib.rena;
 
+/**
+ * An interface with lookahead matcher.
+ * 
+ * @author Yuichiro MORIGUCHI
+ * @param <A> attribute
+ */
 public interface LookaheadMatcher<A> extends ThenMatcher<A> {
 
+	/**
+	 * matches the pattern not consuming the string to be matched.
+	 * 
+	 * @param matcher a pattern to match
+	 * @return this instance
+	 */
 	public default LookaheadMatcher<A> lookahead(final PatternMatcher<A> matcher) {
 		return new LookaheadMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {
@@ -30,6 +42,12 @@ public interface LookaheadMatcher<A> extends ThenMatcher<A> {
 		};
 	}
 
+	/**
+	 * matches the pattern not consuming the string to be not matched.
+	 * 
+	 * @param matcher a pattern to match
+	 * @return this instance
+	 */
 	public default LookaheadMatcher<A> lookaheadNot(final PatternMatcher<A> matcher) {
 		return new LookaheadMatcher<A>() {
 			public PatternResult<A> match(String match, int index, A attribute) {

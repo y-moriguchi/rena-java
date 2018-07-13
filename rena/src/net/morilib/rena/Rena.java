@@ -5,7 +5,7 @@
  *
  * This software is released under the MIT License.
  * http://opensource.org/licenses/mit-license.php
- **/
+ */
 package net.morilib.rena;
 
 import java.util.ArrayList;
@@ -17,6 +17,12 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A class to create parser definition.
+ * 
+ * @author Yuichiro MORIGUCHI
+ * @param <A> attribute
+ */
 public class Rena<A> {
 
 	private abstract class RenaImpl implements LookaheadMatcher<A> {
@@ -67,22 +73,49 @@ public class Rena<A> {
 	private Pattern patternToIgnore;
 	private TrieNode node = new TrieNode();
 
+	/**
+	 * Constructs a class to create parser definition with default settings.
+	 */
 	public Rena() {}
 
+	/**
+	 * Constructs a class to create parser definition with a regular expression to ignore.
+	 * 
+	 * @param toIgnore a regular expression to ignore
+	 */
 	public Rena(String toIgnore) {
 		patternToIgnore = Pattern.compile(toIgnore);
 	}
 
+	/**
+	 * Constructs a class to create parser definition with keywords.<br>
+	 * A longest keyword will be matched.
+	 * 
+	 * @param keys an array of keywords
+	 */
 	public Rena(String[] keys) {
 		for(String key : keys) {
 			addKeyword(key);
 		}
 	}
 
+	/**
+	 * Constructs a class to create parser definition with keywords.<br>
+	 * A longest keyword will be matched.
+	 * 
+	 * @param keys an array of keywords
+	 */
 	public Rena(List<String> keys) {
 		this(keys.toArray(new String[0]));
 	}
 
+	/**
+	 * Constructs a class to create parser definition with a regular expression to ignore and keywords.<br>
+	 * A longest keyword will be matched.
+	 * 
+	 * @param toIgnore a regular expression to ignore
+	 * @param keys an array of keywords
+	 */
 	public Rena(String toIgnore, String[] keys) {
 		this(toIgnore);
 		for(String key : keys) {
@@ -90,6 +123,13 @@ public class Rena<A> {
 		}
 	}
 
+	/**
+	 * Constructs a class to create parser definition with a regular expression to ignore and keywords.<br>
+	 * A longest keyword will be matched.
+	 * 
+	 * @param toIgnore a regular expression to ignore
+	 * @param keys an array of keywords
+	 */
 	public Rena(String toIgnore, List<String> keys) {
 		this(toIgnore, keys.toArray(new String[0]));
 	}
@@ -127,7 +167,14 @@ public class Rena<A> {
 		return node.match(key) ? i : -1;
 	}
 
-	public LookaheadMatcher<A> matcher(final PatternMatcher<A> matcher,
+	/**
+	 * wraps a given matcher and an action which executes when the pattern is matched.
+	 * 
+	 * @param matcher a matcher by PatternMatcher interface
+	 * @param action an action to execute
+	 * @return a matcher
+	 */
+	public LookaheadMatcher<A> then(final PatternMatcher<A> matcher,
 			final PatternAction<A> action) {
 		return new RenaImpl() {
 			@Override
@@ -145,7 +192,13 @@ public class Rena<A> {
 		};
 	}
 
-	public LookaheadMatcher<A> matcher(final PatternMatcher<A> matcher) {
+	/**
+	 * wraps a given matcher.
+	 * 
+	 * @param matcher a matcher by PatternMatcher interface
+	 * @return a matcher
+	 */
+	public LookaheadMatcher<A> then(final PatternMatcher<A> matcher) {
 		return new RenaImpl() {
 			@Override
 			public PatternResult<A> match(String match, int index, A attribute) {
@@ -154,6 +207,14 @@ public class Rena<A> {
 		};
 	}
 
+	/**
+	 * creates a matcher which matches with a given string
+	 * and an action which executes when the pattern is matched.
+	 * 
+	 * @param string a string to be matched
+	 * @param action an action to execute
+	 * @return a matcher
+	 */
 	public LookaheadMatcher<A> string(final String string,
 			final PatternAction<A> action) {
 		return new RenaImpl() {
@@ -170,10 +231,24 @@ public class Rena<A> {
 		};
 	}
 
+	/**
+	 * creates a matcher which matches with a given string.
+	 * 
+	 * @param string a string to be matched
+	 * @return a matcher
+	 */
 	public LookaheadMatcher<A> string(final String string) {
 		return string(string, null);
 	}
 
+	/**
+	 * creates a matcher which matches with a regular expression
+	 * and an action which executes when the pattern is matched.
+	 * 
+	 * @param regex a regular expression to be matched
+	 * @param action an action to execute
+	 * @return a matcher
+	 */
 	public LookaheadMatcher<A> regex(final String regex,
 			final PatternAction<A> action) {
 		final Pattern pattern = Pattern.compile(regex);
@@ -196,10 +271,23 @@ public class Rena<A> {
 		};
 	}
 
+	/**
+	 * creates a matcher which matches with a regular expression.
+	 * 
+	 * @param regex a regular expression to be matched
+	 * @return a matcher
+	 */
 	public LookaheadMatcher<A> regex(final String regex) {
 		return regex(regex, null);
 	}
 
+	/**
+	 * creates a matcher which matches a given keyword.<br>
+	 * A longest keyword will be matched.
+	 * 
+	 * @param key a regular expression to be matched
+	 * @return a matcher
+	 */
 	public LookaheadMatcher<A> key(final String key) {
 		return new RenaImpl() {
 			@Override
@@ -215,6 +303,13 @@ public class Rena<A> {
 		};
 	}
 
+	/**
+	 * A method which can refer a return value of the function itself.<br>
+	 * This method will be used for defining a pattern with recursion.
+	 * 
+	 * @param func a function whose argument is a return value itself.
+	 * @return PatternMatcher interface
+	 */
 	public static<A> PatternMatcher<A> letrec(
 			final Function<PatternMatcher<A>, PatternMatcher<A>> func) {
 		ILetrec<PatternMatcher<A>> f = g -> g.apply(g);
@@ -223,6 +318,14 @@ public class Rena<A> {
 		return f.apply(h);
 	}
 
+	/**
+	 * A method which can refer a return values of the function itself.<br>
+	 * This method will be used for defining a pattern with recursion.
+	 * 
+	 * @param func1 a function whose first argument is a return values itself.
+	 * @param func2 a function whose second argument is a return values itself.
+	 * @return PatternMatcher interface
+	 */
 	public static<A> PatternMatcher<A> letrec(
 			final BiFunction<PatternMatcher<A>, PatternMatcher<A>, PatternMatcher<A>> func1,
 			final BiFunction<PatternMatcher<A>, PatternMatcher<A>, PatternMatcher<A>> func2) {
@@ -240,6 +343,15 @@ public class Rena<A> {
 		return f.apply(h).get(0);
 	}
 
+	/**
+	 * A method which can refer a return values of the function itself.<br>
+	 * This method will be used for defining a pattern with recursion.
+	 * 
+	 * @param func1 a function whose first argument is a return values itself.
+	 * @param func2 a function whose second argument is a return values itself.
+	 * @param func3 a function whose third argument is a return values itself.
+	 * @return PatternMatcher interface
+	 */
 	public static<A> PatternMatcher<A> letrec(
 			final Letrec3Function<A> func1,
 			final Letrec3Function<A> func2,
@@ -260,6 +372,16 @@ public class Rena<A> {
 		return f.apply(h).get(0);
 	}
 
+	/**
+	 * A method which can refer a return values of the function itself.<br>
+	 * This method will be used for defining a pattern with recursion.
+	 * 
+	 * @param func1 a function whose first argument is a return values itself.
+	 * @param func2 a function whose second argument is a return values itself.
+	 * @param func3 a function whose third argument is a return values itself.
+	 * @param func4 a function whose fourth argument is a return values itself.
+	 * @return PatternMatcher interface
+	 */
 	public static<A> PatternMatcher<A> letrec(
 			final Letrec4Function<A> func1,
 			final Letrec4Function<A> func2,
@@ -283,6 +405,17 @@ public class Rena<A> {
 		return f.apply(h).get(0);
 	}
 
+	/**
+	 * A method which can refer a return values of the function itself.<br>
+	 * This method will be used for defining a pattern with recursion.
+	 * 
+	 * @param func1 a function whose first argument is a return values itself.
+	 * @param func2 a function whose second argument is a return values itself.
+	 * @param func3 a function whose third argument is a return values itself.
+	 * @param func4 a function whose fourth argument is a return values itself.
+	 * @param func5 a function whose fifth argument is a return values itself.
+	 * @return PatternMatcher interface
+	 */
 	public static<A> PatternMatcher<A> letrec(
 			final Letrec5Function<A> func1,
 			final Letrec5Function<A> func2,

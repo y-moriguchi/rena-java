@@ -32,7 +32,7 @@ public class RenaTest extends TestCaseBase {
 
 	public void testMatcher1() {
 		Rena<String> r = new Rena<String>();
-		OperationMatcher<String> matcher = r.matcher(
+		OperationMatcher<String> matcher = r.then(
 				(match, ind, a) -> match.startsWith("765", ind) ? new PatternResult<String>("765", ind + 3, a) : null,
 				(match, attr, inherit) -> match);
 
@@ -44,7 +44,7 @@ public class RenaTest extends TestCaseBase {
 
 	public void testMatcher2() {
 		Rena<String> r = new Rena<String>();
-		OperationMatcher<String> matcher = r.matcher(
+		OperationMatcher<String> matcher = r.then(
 				(match, ind, a) -> match.startsWith("765", ind) ? new PatternResult<String>("765", ind + 3, a) : null);
 
 		match("765pro", matcher, "765", 3, "", "");
@@ -86,7 +86,7 @@ public class RenaTest extends TestCaseBase {
 	public void testLetrec001() {
 		final Rena<String> r = new Rena<String>();
 		PatternMatcher<String> matcher =
-				Rena.letrec(x -> r.matcher(r.string("(").then(x).then(r.string(")"))).maybe());
+				Rena.letrec(x -> r.then(r.string("(").then(x).then(r.string(")"))).maybe());
 
 		match("()", matcher, "()", 2, "", "");
 		match("((()))", matcher, "((()))", 6, "", "");
@@ -97,8 +97,8 @@ public class RenaTest extends TestCaseBase {
 	public void testLetrec002() {
 		final Rena<String> r = new Rena<String>();
 		PatternMatcher<String> matcher =
-				Rena.letrec((x, y) -> r.matcher(r.string("(").then(y).then(r.string(")"))).maybe(),
-						(x, y) -> r.matcher(r.string("[").then(x).then(r.string("]"))).maybe());
+				Rena.letrec((x, y) -> r.then(r.string("(").then(y).then(r.string(")"))).maybe(),
+						(x, y) -> r.then(r.string("[").then(x).then(r.string("]"))).maybe());
 
 		match("()", matcher, "()", 2, "", "");
 		match("([()])", matcher, "([()])", 6, "", "");
@@ -110,9 +110,9 @@ public class RenaTest extends TestCaseBase {
 	public void testLetrec003() {
 		final Rena<String> r = new Rena<String>();
 		PatternMatcher<String> matcher =
-				Rena.letrec((x, y, z) -> r.matcher(r.string("(").then(y).then(r.string(")"))).maybe(),
-						(x, y, z) -> r.matcher(r.string("[").then(z).then(r.string("]"))).maybe(),
-						(x, y, z) -> r.matcher(r.string("{").then(x).then(r.string("}"))).maybe());
+				Rena.letrec((x, y, z) -> r.then(r.string("(").then(y).then(r.string(")"))).maybe(),
+						(x, y, z) -> r.then(r.string("[").then(z).then(r.string("]"))).maybe(),
+						(x, y, z) -> r.then(r.string("{").then(x).then(r.string("}"))).maybe());
 
 		match("()", matcher, "()", 2, "", "");
 		match("([{()}])", matcher, "([{()}])", 8, "", "");
@@ -124,10 +124,10 @@ public class RenaTest extends TestCaseBase {
 	public void testLetrec004() {
 		final Rena<String> r = new Rena<String>();
 		PatternMatcher<String> matcher =
-				Rena.letrec((x, y, z, w) -> r.matcher(r.string("(").then(y).then(r.string(")"))).maybe(),
-						(x, y, z, w) -> r.matcher(r.string("[").then(z).then(r.string("]"))).maybe(),
-						(x, y, z, w) -> r.matcher(r.string("{").then(w).then(r.string("}"))).maybe(),
-						(x, y, z, w) -> r.matcher(r.string("<").then(x).then(r.string(">"))).maybe());
+				Rena.letrec((x, y, z, w) -> r.then(r.string("(").then(y).then(r.string(")"))).maybe(),
+						(x, y, z, w) -> r.then(r.string("[").then(z).then(r.string("]"))).maybe(),
+						(x, y, z, w) -> r.then(r.string("{").then(w).then(r.string("}"))).maybe(),
+						(x, y, z, w) -> r.then(r.string("<").then(x).then(r.string(">"))).maybe());
 
 		match("()", matcher, "()", 2, "", "");
 		match("([{<()>}])", matcher, "([{<()>}])", 10, "", "");
@@ -139,11 +139,11 @@ public class RenaTest extends TestCaseBase {
 	public void testLetrec005() {
 		final Rena<String> r = new Rena<String>();
 		PatternMatcher<String> matcher =
-				Rena.letrec((x, y, z, w, v) -> r.matcher(r.string("(").then(y).then(r.string(")"))).maybe(),
-						(x, y, z, w, v) -> r.matcher(r.string("[").then(z).then(r.string("]"))).maybe(),
-						(x, y, z, w, v) -> r.matcher(r.string("{").then(w).then(r.string("}"))).maybe(),
-						(x, y, z, w, v) -> r.matcher(r.string("<").then(v).then(r.string(">"))).maybe(),
-						(x, y, z, w, v) -> r.matcher(r.string("|").then(x).then(r.string("|"))).maybe());
+				Rena.letrec((x, y, z, w, v) -> r.then(r.string("(").then(y).then(r.string(")"))).maybe(),
+						(x, y, z, w, v) -> r.then(r.string("[").then(z).then(r.string("]"))).maybe(),
+						(x, y, z, w, v) -> r.then(r.string("{").then(w).then(r.string("}"))).maybe(),
+						(x, y, z, w, v) -> r.then(r.string("<").then(v).then(r.string(">"))).maybe(),
+						(x, y, z, w, v) -> r.then(r.string("|").then(x).then(r.string("|"))).maybe());
 
 		match("()", matcher, "()", 2, "", "");
 		match("([{<|()|>}])", matcher, "([{<|()|>}])", 12, "", "");
