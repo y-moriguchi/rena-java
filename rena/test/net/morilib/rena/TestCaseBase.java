@@ -22,6 +22,14 @@ public class TestCaseBase extends TestCase {
 		assertEquals(result.getAttribute(), attr);
 	}
 
+	protected<A> void match(String toMatch, PatternMatcher<A> matcher, String match, A init, A attr) {
+		match(toMatch, matcher, match, match.length(), init, attr);
+	}
+
+	protected<A> void match(String toMatch, PatternMatcher<A> matcher, A init, A attr) {
+		match(toMatch, matcher, toMatch, toMatch.length(), init, attr);
+	}
+
 	protected<A> void nomatch(String toMatch, PatternMatcher<A> matcher) {
 		PatternResult<A> result = matcher.match(toMatch, 0, null);
 		assertNull(result);

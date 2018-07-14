@@ -135,6 +135,7 @@ public class Rena<A> {
 	 */
 	public Rena(String toIgnore, String[] keys) {
 		this(toIgnore);
+		node = new TrieNode();
 		for(String key : keys) {
 			addKeyword(key);
 		}
@@ -331,7 +332,7 @@ public class Rena<A> {
 		};
 	}
 
-	public LookaheadMatcher<A> notKey(final String key) {
+	public LookaheadMatcher<A> notKey() {
 		return new RenaImpl() {
 			@Override
 			public PatternResult<A> match(String match, int index, A attribute) {
@@ -354,7 +355,7 @@ public class Rena<A> {
 					PatternResult<A> result = new PatternResult<A>("", index, null);
 					if(index == str.length()) {
 						return result;
-					} else if(patternToIgnore == null || node == null) {
+					} else if(patternToIgnore == null && node == null) {
 						return result;
 					} else if(patternToIgnore != null &&
 							patternToIgnore.matcher(str.substring(index)).lookingAt()) {
@@ -403,7 +404,8 @@ public class Rena<A> {
 
 	public OperationMatcher<A> times(int countmin, int countmax, PatternMatcher<A> pattern,
 			PatternAction<A> action, A init) {
-		return new InitAttr(init).then(then(pattern).times(countmin, countmax, action));
+		return new InitAttr(init).then(then(pattern).times(countmin, countmax, action),
+				(str, syn, inherit) -> syn);
 	}
 
 	public OperationMatcher<A> times(int countmin, int countmax, PatternMatcher<A> pattern,
@@ -411,9 +413,14 @@ public class Rena<A> {
 		return then(pattern).times(countmin, countmax, action);
 	}
 
+	public OperationMatcher<A> times(int countmin, int countmax, PatternMatcher<A> pattern) {
+		return then(pattern).times(countmin, countmax);
+	}
+
 	public OperationMatcher<A> atLeast(int count, PatternMatcher<A> pattern,
 			PatternAction<A> action, A init) {
-		return new InitAttr(init).then(then(pattern).atLeast(count, action));
+		return new InitAttr(init).then(then(pattern).atLeast(count, action),
+				(str, syn, inherit) -> syn);
 	}
 
 	public OperationMatcher<A> atLeast(int count, PatternMatcher<A> pattern,
@@ -421,9 +428,14 @@ public class Rena<A> {
 		return then(pattern).atLeast(count, action);
 	}
 
+	public OperationMatcher<A> atLeast(int count, PatternMatcher<A> pattern) {
+		return then(pattern).atLeast(count);
+	}
+
 	public OperationMatcher<A> atMost(int count, PatternMatcher<A> pattern,
 			PatternAction<A> action, A init) {
-		return new InitAttr(init).then(then(pattern).atMost(count, action));
+		return new InitAttr(init).then(then(pattern).atMost(count, action),
+				(str, syn, inherit) -> syn);
 	}
 
 	public OperationMatcher<A> atMost(int count, PatternMatcher<A> pattern,
@@ -431,36 +443,59 @@ public class Rena<A> {
 		return then(pattern).atMost(count, action);
 	}
 
+	public OperationMatcher<A> atMost(int count, PatternMatcher<A> pattern) {
+		return then(pattern).atMost(count);
+	}
+
 	public OperationMatcher<A> maybe(PatternMatcher<A> pattern, PatternAction<A> action) {
 		return then(pattern).maybe(action);
 	}
 
+	public OperationMatcher<A> maybe(PatternMatcher<A> pattern) {
+		return then(pattern).maybe();
+	}
+
 	public OperationMatcher<A> zeroOrMore(PatternMatcher<A> pattern,
 			PatternAction<A> action, A init) {
-		return new InitAttr(init).then(then(pattern).zeroOrMore(action));
+		return new InitAttr(init).then(then(pattern).zeroOrMore(action),
+				(str, syn, inherit) -> syn);
 	}
 
 	public OperationMatcher<A> zeroOrMore(PatternMatcher<A> pattern, PatternAction<A> action) {
 		return then(pattern).zeroOrMore(action);
 	}
 
+	public OperationMatcher<A> zeroOrMore(PatternMatcher<A> pattern) {
+		return then(pattern).zeroOrMore();
+	}
+
 	public OperationMatcher<A> oneOrMore(PatternMatcher<A> pattern,
 			PatternAction<A> action, A init) {
-		return new InitAttr(init).then(then(pattern).oneOrMore(action));
+		return new InitAttr(init).then(then(pattern).oneOrMore(action),
+				(str, syn, inherit) -> syn);
 	}
 
 	public OperationMatcher<A> oneOrMore(PatternMatcher<A> pattern, PatternAction<A> action) {
 		return then(pattern).oneOrMore(action);
 	}
 
+	public OperationMatcher<A> oneOrMore(PatternMatcher<A> pattern) {
+		return then(pattern).oneOrMore();
+	}
+
 	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, String delimiter,
 			PatternAction<A> action, A init) {
-		return new InitAttr(init).then(then(pattern).delimit(delimiter, action));
+		return new InitAttr(init).then(then(pattern).delimit(delimiter, action),
+				(str, syn, inherit) -> syn);
 	}
 
 	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, String delimiter,
 			PatternAction<A> action) {
 		return then(pattern).delimit(delimiter, action);
+	}
+
+	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, String delimiter) {
+		return then(pattern).delimit(delimiter);
 	}
 
 	public LookaheadMatcher<A> attr(A attr) {

@@ -45,7 +45,7 @@ public interface PatternMatcher<A> {
 		PatternResult<A> result;
 
 		for(int i = index; i < match.length(); i++) {
-			result = match(match, index, attribute);
+			result = match(match, i, attribute);
 			if(result != null) {
 				return result;
 			}
@@ -60,11 +60,14 @@ public interface PatternMatcher<A> {
 	public default A parsePartGlobal(String match, int index, A init, BiFunction<A, A, A> action) {
 		A attr = init;
 
-		for(int i = index; i < match.length(); i++) {
-			PatternResult<A> result = match(match, index, attr);
+		for(int i = index; i < match.length();) {
+			PatternResult<A> result = match(match, i, attr);
 
 			if(result != null) {
 				attr = action.apply(result.getAttribute(), attr);
+				i = result.getLastIndex();
+			} else {
+				i++;
 			}
 		}
 		return attr;
@@ -77,11 +80,14 @@ public interface PatternMatcher<A> {
 	public default List<A> parsePartGlobalList(String match, int index) {
 		List<A> attr = new ArrayList<A>();
 
-		for(int i = index; i < match.length(); i++) {
-			PatternResult<A> result = match(match, index, null);
+		for(int i = index; i < match.length();) {
+			PatternResult<A> result = match(match, i, null);
 
 			if(result != null) {
 				attr.add(result.getAttribute());
+				i = result.getLastIndex();
+			} else {
+				i++;
 			}
 		}
 		return attr;
