@@ -92,7 +92,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	public default ThenMatcher<A> thenTimes(final int countmin,
 			final int countmax,
 			final OperationMatcher<A> pattern) {
-		return thenTimes(countmin, countmax, pattern, null);
+		return thenTimes(countmin, countmax, pattern, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	 * @return a matcher
 	 */
 	public default ThenMatcher<A> thenAtLeast(final int count, final OperationMatcher<A> pattern) {
-		return thenTimes(count, -1, pattern, null);
+		return thenTimes(count, -1, pattern, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -146,7 +146,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	 * @return a matcher
 	 */
 	public default ThenMatcher<A> thenAtMost(final int count, final OperationMatcher<A> pattern) {
-		return thenTimes(0, count, pattern, null);
+		return thenTimes(0, count, pattern, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -169,7 +169,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	 * @return a matcher
 	 */
 	public default ThenMatcher<A> thenMaybe(final OperationMatcher<A> pattern) {
-		return thenTimes(0, 1, pattern, null);
+		return thenTimes(0, 1, pattern, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -192,7 +192,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	 * @return a matcher
 	 */
 	public default ThenMatcher<A> thenZeroOrMore(final OperationMatcher<A> pattern) {
-		return thenTimes(0, -1, pattern, null);
+		return thenTimes(0, -1, pattern, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -215,7 +215,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	 * @return a matcher
 	 */
 	public default ThenMatcher<A> thenOneOrMore(final OperationMatcher<A> pattern) {
-		return thenTimes(1, -1, pattern, null);
+		return thenTimes(1, -1, pattern, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -243,7 +243,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	 */
 	public default ThenMatcher<A> thenDelimit(final OperationMatcher<A> pattern,
 			final PatternMatcher<A> delimiter) {
-		return thenDelimit(pattern, delimiter, null);
+		return thenDelimit(pattern, delimiter, (str, syn, inherit) -> syn);
 	}
 
 }

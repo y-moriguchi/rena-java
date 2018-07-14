@@ -81,7 +81,7 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 */
 	public default OperationMatcher<A> times(final int countmin,
 			final int countmax) {
-		return times(countmin, countmax, null);
+		return times(countmin, countmax, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -104,7 +104,7 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * @return a matcher
 	 */
 	public default OperationMatcher<A> atLeast(final int count) {
-		return times(count, -1, null);
+		return times(count, -1, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * @return a matcher
 	 */
 	public default OperationMatcher<A> atMost(final int count) {
-		return times(0, count, null);
+		return times(0, count, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -148,7 +148,7 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * @return a matcher
 	 */
 	public default OperationMatcher<A> maybe() {
-		return times(0, 1, null);
+		return times(0, 1, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -169,7 +169,7 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * @return a matcher
 	 */
 	public default OperationMatcher<A> zeroOrMore() {
-		return times(0, -1, null);
+		return times(0, -1, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -190,7 +190,7 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * @return a matcher
 	 */
 	public default OperationMatcher<A> oneOrMore() {
-		return times(1, -1, null);
+		return times(1, -1, (str, syn, inherit) -> syn);
 	}
 
 	/**
@@ -252,7 +252,7 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * @return a matcher
 	 */
 	public default OperationMatcher<A> delimit(final PatternMatcher<A> delimiter) {
-		return delimit(delimiter, null);
+		return delimit(delimiter, (str, syn, inherit) -> syn);
 	}
 
 	/**
