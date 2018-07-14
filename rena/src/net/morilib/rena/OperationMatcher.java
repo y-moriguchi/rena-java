@@ -285,7 +285,7 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 			public PatternResult<A> match(String match, int index, A attribute) {
 				PatternResult<A> result = OperationMatcher.this.match(match, index, attribute);
 
-				return match.length() == result.getLastIndex() ? result : null;
+				return result != null && match.length() == result.getLastIndex() ? result : null;
 			}
 
 			public int skipSpace(String match, int index) {

@@ -145,7 +145,7 @@ public class OperationMatcherTest extends TestCaseBase {
 		nomatch("961", matcher);
 	}
 
-	public void testDemilit001() {
+	public void testDemilitBy001() {
 		Rena<Integer> r = new Rena<Integer>();
 		OperationMatcher<Integer> matcher = r.regex("[0-9]+", (m, b, a) -> Integer.parseInt(m))
 				.delimit(r.string("+"), (m, b, a) -> a + b);
@@ -164,14 +164,14 @@ public class OperationMatcherTest extends TestCaseBase {
 		nomatch("+765", matcher);
 	}
 
-	public void testDemilit002() {
+	public void testDemilitBy002() {
 		Rena<String> r = new Rena<String>();
 		OperationMatcher<String> matcher = r.regex("[0-9]+").delimit(r.string("+"), (m, b, a) -> a + m);
 
 		match("765+346", matcher, "765+346", 7, "", "765346");
 	}
 
-	public void testDemilit003() {
+	public void testDemilitBy003() {
 		Rena<String> r = new Rena<String>();
 		OperationMatcher<String> matcher = r.regex("[0-9]+").delimit(r.string("+"));
 

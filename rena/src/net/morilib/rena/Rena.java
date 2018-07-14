@@ -89,6 +89,8 @@ public class Rena<A> {
 	private Pattern patternToIgnore;
 	private TrieNode node;
 
+	public final PatternAction<A> I = (str, syn, inherit) -> syn;
+
 	/**
 	 * Constructs a class to create parser definition with default settings.
 	 */

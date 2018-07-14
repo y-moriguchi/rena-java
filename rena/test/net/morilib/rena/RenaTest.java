@@ -371,7 +371,7 @@ public class RenaTest extends TestCaseBase {
 
 	public void testMaybe001() {
 		Rena<String> r = new Rena<String>();
-		PatternMatcher<String> matcher = r.atMost(3, r.regex("[0-9]{3}"), (str, b, a) -> str);
+		PatternMatcher<String> matcher = r.maybe(r.regex("[0-9]{3}"), (str, b, a) -> str);
 
 		match("765", matcher, "", "765");
 		match("", matcher, "", "");
@@ -380,7 +380,7 @@ public class RenaTest extends TestCaseBase {
 
 	public void testMaybe002() {
 		Rena<String> r = new Rena<String>();
-		PatternMatcher<String> matcher = r.atMost(3, r.regex("[0-9]{3}"));
+		PatternMatcher<String> matcher = r.maybe(r.regex("[0-9]{3}"));
 
 		match("765", matcher, "", "");
 		match("", matcher, "", "");
