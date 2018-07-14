@@ -314,7 +314,7 @@ public class Rena<A> {
 	 * creates a matcher which matches a given keyword.<br>
 	 * A longest keyword will be matched.
 	 * 
-	 * @param key a regular expression to be matched
+	 * @param key a string to be matched
 	 * @return a matcher
 	 */
 	public LookaheadMatcher<A> key(final String key) {
@@ -332,6 +332,11 @@ public class Rena<A> {
 		};
 	}
 
+	/**
+	 * creates a matcher which matches if any keyword does not match.
+	 * 
+	 * @return a matcher
+	 */
 	public LookaheadMatcher<A> notKey() {
 		return new RenaImpl() {
 			@Override
@@ -345,10 +350,23 @@ public class Rena<A> {
 		};
 	}
 
+	/**
+	 * creates a matcher which matches newline.
+	 * 
+	 * @return a matcher
+	 */
 	public LookaheadMatcher<A> br() {
 		return regex("\r\n|\r|\n");
 	}
 
+	/**
+	 * creates a matcher which matches the given string.<br>
+	 * If a pattern to ignore is specified, the id which succeeds the pattern to ignore will only match.<br>
+	 * If keywords is specified, the id which succeeds the keywords will only match.
+	 * 
+	 * @param id a string
+	 * @return a matcher
+	 */
 	public LookaheadMatcher<A> equalsId(final String id) {
 		return string(id)
 				.lookahead((str, index, attr) -> {
@@ -368,20 +386,52 @@ public class Rena<A> {
 				});
 	}
 
+	/**
+	 * creates a matcher which matches float number.<br>
+	 * The sign is considered if the given signum is true.
+	 * 
+	 * @param signum sign
+	 * @param action an action
+	 * @return a matcher
+	 */
 	public LookaheadMatcher<A> real(boolean signum, final PatternAction<A> action) {
 		return regex(signum ? REAL_WITH_SIGN : REAL_NO_SIGN, action);
 	}
 
+	/**
+	 * creates a matcher which matches when one of the given matchers matches.
+	 * 
+	 * @param arg1 a matcher
+	 * @param arg2 a matcher
+	 * @return a matcher of alternation
+	 */
 	public OrMatcher<A> or(PatternMatcher<A> arg1, PatternMatcher<A> arg2) {
 		return then(arg1).or(arg2);
 	}
 
+	/**
+	 * creates a matcher which matches when one of the given matchers matches.
+	 * 
+	 * @param arg1 a matcher
+	 * @param arg2 a matcher
+	 * @param arg3 a matcher
+	 * @return a matcher of alternation
+	 */
 	public OrMatcher<A> or(PatternMatcher<A> arg1,
 			PatternMatcher<A> arg2,
 			PatternMatcher<A> arg3) {
 		return then(arg1).or(arg2).or(arg3);
 	}
 
+	/**
+	 * creates a matcher which matches when one of the given matchers matches.
+	 * 
+	 * @param arg1 a matcher
+	 * @param arg2 a matcher
+	 * @param arg3 a matcher
+	 * @param arg4 a matcher
+	 * @return a matcher of alternation
+	 */
 	public OrMatcher<A> or(PatternMatcher<A> arg1,
 			PatternMatcher<A> arg2,
 			PatternMatcher<A> arg3,
@@ -389,6 +439,12 @@ public class Rena<A> {
 		return then(arg1).or(arg2).or(arg3).or(arg4);
 	}
 
+	/**
+	 * creates a matcher which matches when one of matchers in the given list matches.
+	 * 
+	 * @param args a list of matchers
+	 * @return a matcher of alternation
+	 */
 	public OrMatcher<A> or(List<PatternMatcher<A>> args) {
 		OrMatcher<A> result;
 
@@ -402,102 +458,282 @@ public class Rena<A> {
 		return result;
 	}
 
+	/**
+	 * repeats the given patterns to the given count.<br>
+	 * This method is NOT backtracking.
+	 *
+	 * @param countmin minimum of repetition
+	 * @param countmax maximum of repetition
+	 * @param pattern a matcher
+	 * @param action an action to be invoked
+	 * @param an initial attribute
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> times(int countmin, int countmax, PatternMatcher<A> pattern,
 			PatternAction<A> action, A init) {
 		return new InitAttr(init).then(then(pattern).times(countmin, countmax, action),
 				(str, syn, inherit) -> syn);
 	}
 
+	/**
+	 * repeats the given patterns to the given count.<br>
+	 * This method is NOT backtracking.
+	 *
+	 * @param countmin minimum of repetition
+	 * @param countmax maximum of repetition
+	 * @param pattern a matcher
+	 * @param action an action to be invoked
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> times(int countmin, int countmax, PatternMatcher<A> pattern,
 			PatternAction<A> action) {
 		return then(pattern).times(countmin, countmax, action);
 	}
 
+	/**
+	 * repeats the given patterns to the given count.<br>
+	 * This method is NOT backtracking.
+	 *
+	 * @param countmin minimum of repetition
+	 * @param countmax maximum of repetition
+	 * @param pattern a matcher
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> times(int countmin, int countmax, PatternMatcher<A> pattern) {
 		return then(pattern).times(countmin, countmax);
 	}
 
+	/**
+	 * repeats the given pattern at least the given count.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param count minimum of repetition
+	 * @param pattern a matcher
+	 * @param action an action to be invoked
+	 * @param an initial attribute
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> atLeast(int count, PatternMatcher<A> pattern,
 			PatternAction<A> action, A init) {
 		return new InitAttr(init).then(then(pattern).atLeast(count, action),
 				(str, syn, inherit) -> syn);
 	}
 
+	/**
+	 * repeats the given pattern at least the given count.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param count minimum of repetition
+	 * @param pattern a matcher
+	 * @param action an action to be invoked
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> atLeast(int count, PatternMatcher<A> pattern,
 			PatternAction<A> action) {
 		return then(pattern).atLeast(count, action);
 	}
 
+	/**
+	 * repeats the given pattern at least the given count.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param count minimum of repetition
+	 * @param pattern a matcher
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> atLeast(int count, PatternMatcher<A> pattern) {
 		return then(pattern).atLeast(count);
 	}
 
+	/**
+	 * repeats the given pattern at most the given count.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param count maximum of repetition
+	 * @param pattern a matcher
+	 * @param action an action to be invoked
+	 * @param an initial attribute
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> atMost(int count, PatternMatcher<A> pattern,
 			PatternAction<A> action, A init) {
 		return new InitAttr(init).then(then(pattern).atMost(count, action),
 				(str, syn, inherit) -> syn);
 	}
 
+	/**
+	 * repeats the given pattern at most the given count.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param count maximum of repetition
+	 * @param pattern a matcher
+	 * @param action an action to be invoked
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> atMost(int count, PatternMatcher<A> pattern,
 			PatternAction<A> action) {
 		return then(pattern).atMost(count, action);
 	}
 
+	/**
+	 * repeats the given pattern at most the given count.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param count maximum of repetition
+	 * @param pattern a matcher
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> atMost(int count, PatternMatcher<A> pattern) {
 		return then(pattern).atMost(count);
 	}
 
+	/**
+	 * matches zero or one of the given pattern.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param pattern a matcher
+	 * @param action an action to be invoked
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> maybe(PatternMatcher<A> pattern, PatternAction<A> action) {
 		return then(pattern).maybe(action);
 	}
 
+	/**
+	 * matches zero or one of the given pattern.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param pattern a matcher
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> maybe(PatternMatcher<A> pattern) {
 		return then(pattern).maybe();
 	}
 
+	/**
+	 * a shortcut of 'atLeast(0, pattern, action, init)'.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param pattern a matcher
+	 * @param action an action to be invoked
+	 * @param an initial attribute
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> zeroOrMore(PatternMatcher<A> pattern,
 			PatternAction<A> action, A init) {
 		return new InitAttr(init).then(then(pattern).zeroOrMore(action),
 				(str, syn, inherit) -> syn);
 	}
 
+	/**
+	 * a shortcut of 'atLeast(0, pattern, action)'.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param pattern a matcher
+	 * @param action an action to be invoked
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> zeroOrMore(PatternMatcher<A> pattern, PatternAction<A> action) {
 		return then(pattern).zeroOrMore(action);
 	}
 
+	/**
+	 * a shortcut of 'atLeast(0, pattern)'.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param pattern a matcher
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> zeroOrMore(PatternMatcher<A> pattern) {
 		return then(pattern).zeroOrMore();
 	}
 
+	/**
+	 * a shortcut of 'atLeast(1, pattern, action, init)'.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param pattern a matcher
+	 * @param action an action to be invoked
+	 * @param an initial attribute
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> oneOrMore(PatternMatcher<A> pattern,
 			PatternAction<A> action, A init) {
 		return new InitAttr(init).then(then(pattern).oneOrMore(action),
 				(str, syn, inherit) -> syn);
 	}
 
+	/**
+	 * a shortcut of 'atLeast(1, pattern, action)'.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param pattern a matcher
+	 * @param action an action to be invoked
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> oneOrMore(PatternMatcher<A> pattern, PatternAction<A> action) {
 		return then(pattern).oneOrMore(action);
 	}
 
+	/**
+	 * a shortcut of 'atLeast(1, pattern)'.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param pattern a matcher
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> oneOrMore(PatternMatcher<A> pattern) {
 		return then(pattern).oneOrMore();
 	}
 
+	/**
+	 * matches a string which is delimited by the given string.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param pattern a matcher
+	 * @param delimiter a string of delimiter
+	 * @param action an action to be invoked
+	 * @param an initial attribute
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, String delimiter,
 			PatternAction<A> action, A init) {
 		return new InitAttr(init).then(then(pattern).delimit(delimiter, action),
 				(str, syn, inherit) -> syn);
 	}
 
+	/**
+	 * matches a string which is delimited by the given string.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param pattern a matcher
+	 * @param delimiter a string of delimiter
+	 * @param action an action to be invoked
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, String delimiter,
 			PatternAction<A> action) {
 		return then(pattern).delimit(delimiter, action);
 	}
 
+	/**
+	 * matches a string which is delimited by the given string.<br>
+	 * This method is NOT backtracking.
+	 * 
+	 * @param pattern a matcher
+	 * @param delimiter a string of delimiter
+	 * @return a matcher
+	 */
 	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, String delimiter) {
 		return then(pattern).delimit(delimiter);
 	}
 
+	/**
+	 * sets the attribute to the given value.
+	 * 
+	 * @param attr an attribute to set
+	 * @return a matcher
+	 */
 	public LookaheadMatcher<A> attr(A attr) {
 		return new InitAttr(attr);
 	}

@@ -28,13 +28,13 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	public int skipSpace(String match, int index);
 
 	/**
-	 * repeats the given patterns to the given count.<br>
+	 * repeats to the given count.<br>
 	 * This method is NOT backtracking.
 	 *
-	 * @param countmin minimum of repetation
-	 * @param countmax maximum of repetation
+	 * @param countmin minimum of repetition
+	 * @param countmax maximum of repetition
 	 * @param action an action to be invoked
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> times(final int countmin,
 			final int countmax,
@@ -72,12 +72,12 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	}
 
 	/**
-	 * repeats the given patterns to the given count.<br>
+	 * repeats to the given count.<br>
 	 * This method is NOT backtracking.
 	 *
-	 * @param countmin minimum of repetation
-	 * @param countmax maximum of repetation
-	 * @return this instance
+	 * @param countmin minimum of repetition
+	 * @param countmax maximum of repetition
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> times(final int countmin,
 			final int countmax) {
@@ -85,67 +85,67 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	}
 
 	/**
-	 * repeats the given patterns at least the given count.<br>
+	 * repeats at least the given count.<br>
 	 * This method is NOT backtracking.
 	 * 
-	 * @param count minimum of repetation
+	 * @param count minimum of repetition
 	 * @param action an action to be invoked
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> atLeast(final int count, final PatternAction<A> action) {
 		return times(count, -1, action);
 	}
 
 	/**
-	 * repeats the given patterns at least the given count.<br>
+	 * repeats at least the given count.<br>
 	 * This method is NOT backtracking.
 	 * 
-	 * @param count minimum of repetation
-	 * @return this instance
+	 * @param count minimum of repetition
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> atLeast(final int count) {
 		return times(count, -1, null);
 	}
 
 	/**
-	 * repeats the given patterns at most the given count.<br>
+	 * repeats at most the given count.<br>
 	 * This method is NOT backtracking.
 	 * 
-	 * @param count maximum of repetation
+	 * @param count maximum of repetition
 	 * @param action an action to be invoked
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> atMost(final int count, final PatternAction<A> action) {
 		return times(0, count, action);
 	}
 
 	/**
-	 * repeats the given patterns at most the given count.<br>
+	 * repeats at most the given count.<br>
 	 * This method is NOT backtracking.
 	 * 
-	 * @param count maximum of repetation
-	 * @return this instance
+	 * @param count maximum of repetition
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> atMost(final int count) {
 		return times(0, count, null);
 	}
 
 	/**
-	 * matches zero or one of the given patterns.<br>
+	 * matches zero or one of the this matcher.<br>
 	 * This method is NOT backtracking.
 	 * 
 	 * @param action an action to be invoked
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> maybe(final PatternAction<A> action) {
 		return times(0, 1, action);
 	}
 
 	/**
-	 * matches zero or one of the given patterns.<br>
+	 * matches zero or one of the this matcher.<br>
 	 * This method is NOT backtracking.
 	 * 
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> maybe() {
 		return times(0, 1, null);
@@ -156,17 +156,17 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * This method is NOT backtracking.
 	 * 
 	 * @param action an action to be invoked
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> zeroOrMore(final PatternAction<A> action) {
 		return times(0, -1, action);
 	}
 
 	/**
-	 * a shortcut of 'atLeast(0, action)'.<br>
+	 * a shortcut of 'atLeast(0)'.<br>
 	 * This method is NOT backtracking.
 	 * 
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> zeroOrMore() {
 		return times(0, -1, null);
@@ -177,17 +177,17 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * This method is NOT backtracking.
 	 * 
 	 * @param action an action to be invoked
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> oneOrMore(final PatternAction<A> action) {
 		return times(1, -1, action);
 	}
 
 	/**
-	 * a shortcut of 'atLeast(1, action)'.<br>
+	 * a shortcut of 'atLeast(1)'.<br>
 	 * This method is NOT backtracking.
 	 * 
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> oneOrMore() {
 		return times(1, -1, null);
@@ -197,9 +197,9 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * matches a string which is delimited by the given string.<br>
 	 * This method is NOT backtracking.
 	 * 
-	 * @param delimiter a pattern of delimiter
+	 * @param delimiter a string of delimiter
 	 * @param action an action to be invoked
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> delimit(final String delimiter,
 			final PatternAction<A> action) {
@@ -247,8 +247,8 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * matches a string which is delimited by the given string.<br>
 	 * This method is NOT backtracking.
 	 * 
-	 * @param delimiter a pattern of delimiter
-	 * @return this instance
+	 * @param delimiter a string of delimiter
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> delimit(final String delimiter) {
 		return delimit(delimiter, null);
@@ -258,7 +258,7 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * matches the pattern if the given condition is true.
 	 * 
 	 * @param cond the condition
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> cond(final Predicate<A> cond) {
 		return new OperationMatcher<A>() {
@@ -277,7 +277,7 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	/**
 	 * matches end of string.
 	 * 
-	 * @return this instance
+	 * @return a matcher
 	 */
 	public default OperationMatcher<A> end() {
 		return new OperationMatcher<A>() {
