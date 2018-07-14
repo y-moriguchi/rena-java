@@ -443,7 +443,7 @@ public class RenaTest extends TestCaseBase {
 
 	public void testDelimit001() {
 		Rena<String> r = new Rena<String>();
-		PatternMatcher<String> matcher = r.delimit(r.regex("[0-9]"), "-", (str, b, a) -> a + str, "");
+		PatternMatcher<String> matcher = r.delimit(r.regex("[0-9]"), r.string("-"), (str, b, a) -> a + str, "");
 
 		match("7-6-5", matcher, "961", "765");
 		match("9", matcher, "961", "9");
@@ -452,7 +452,7 @@ public class RenaTest extends TestCaseBase {
 
 	public void testDelimit002() {
 		Rena<String> r = new Rena<String>();
-		PatternMatcher<String> matcher = r.delimit(r.regex("[0-9]"), "-", (str, b, a) -> a + str);
+		PatternMatcher<String> matcher = r.delimit(r.regex("[0-9]"), r.string("-"), (str, b, a) -> a + str);
 
 		match("7-6-5", matcher, "", "765");
 		match("9", matcher, "", "9");
@@ -461,7 +461,7 @@ public class RenaTest extends TestCaseBase {
 
 	public void testDelimit003() {
 		Rena<String> r = new Rena<String>();
-		PatternMatcher<String> matcher = r.delimit(r.regex("[0-9]"), "-");
+		PatternMatcher<String> matcher = r.delimit(r.regex("[0-9]"), r.string("-"));
 
 		match("7-6-5", matcher, "", "");
 		match("9", matcher, "", "");

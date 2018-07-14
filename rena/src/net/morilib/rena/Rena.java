@@ -687,16 +687,16 @@ public class Rena<A> {
 	}
 
 	/**
-	 * matches a string which is delimited by the given string.<br>
+	 * matches a string which is delimited by the given pattern.<br>
 	 * This method is NOT backtracking.
 	 * 
 	 * @param pattern a matcher
-	 * @param delimiter a string of delimiter
+	 * @param delimiter a pattern of delimiter
 	 * @param action an action to be invoked
 	 * @param an initial attribute
 	 * @return a matcher
 	 */
-	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, String delimiter,
+	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, PatternMatcher<A> delimiter,
 			PatternAction<A> action, A init) {
 		return new InitAttr(init).then(then(pattern).delimit(delimiter, action),
 				(str, syn, inherit) -> syn);
@@ -707,11 +707,11 @@ public class Rena<A> {
 	 * This method is NOT backtracking.
 	 * 
 	 * @param pattern a matcher
-	 * @param delimiter a string of delimiter
+	 * @param delimiter a pattern of delimiter
 	 * @param action an action to be invoked
 	 * @return a matcher
 	 */
-	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, String delimiter,
+	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, PatternMatcher<A> delimiter,
 			PatternAction<A> action) {
 		return then(pattern).delimit(delimiter, action);
 	}
@@ -721,10 +721,10 @@ public class Rena<A> {
 	 * This method is NOT backtracking.
 	 * 
 	 * @param pattern a matcher
-	 * @param delimiter a string of delimiter
+	 * @param delimiter a pattern of delimiter
 	 * @return a matcher
 	 */
-	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, String delimiter) {
+	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, PatternMatcher<A> delimiter) {
 		return then(pattern).delimit(delimiter);
 	}
 

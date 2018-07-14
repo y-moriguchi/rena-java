@@ -201,16 +201,17 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * @param action an action to be invoked
 	 * @return a matcher
 	 */
-	public default OperationMatcher<A> delimit(final String delimiter,
+	public default OperationMatcher<A> delimit(final PatternMatcher<A> delimiter,
 			final PatternAction<A> action) {
 		return new OperationMatcher<A>() {
 			private PatternResult<A> isMatched(String match, int index, A attr) {
+				PatternResult<A> result;
 				int lastIndex = index;
 
-				if(!match.startsWith(delimiter, index)) {
+				if((result = delimiter.match(match, index, attr)) == null) {
 					return null;
 				}
-				lastIndex = skipSpace(match, lastIndex + delimiter.length());
+				lastIndex = skipSpace(match, result.getLastIndex());
 				return OperationMatcher.this.match(match, lastIndex, attr);
 			}
 
@@ -250,7 +251,7 @@ public interface OperationMatcher<A> extends PatternMatcher<A> {
 	 * @param delimiter a string of delimiter
 	 * @return a matcher
 	 */
-	public default OperationMatcher<A> delimit(final String delimiter) {
+	public default OperationMatcher<A> delimit(final PatternMatcher<A> delimiter) {
 		return delimit(delimiter, null);
 	}
 
