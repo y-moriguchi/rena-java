@@ -60,4 +60,8 @@ public class PatternResult<A> {
 	public A getAttribute() {
 		return attribute;
 	}
+
+	public String toString() {
+		return "match=" + match + ",lastIndex=" + lastIndex + ",attribute=" + attribute;
+	}
 }

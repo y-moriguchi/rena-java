@@ -60,7 +60,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	 * @return a matcher
 	 */
 	public default ThenMatcher<A> then(final PatternMatcher<A> matcher) {
-		return then(matcher, null);
+		return then(matcher, (str, syn, inherit) -> syn);
 	}
 
 	/**
