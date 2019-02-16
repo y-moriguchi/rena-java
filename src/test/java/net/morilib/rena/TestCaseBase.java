@@ -44,4 +44,8 @@ public class TestCaseBase extends TestCase {
 		}
 	}
 
+	public void test001() {
+		// dummy test case
+	}
+
 }
