@@ -39,6 +39,62 @@ public class ThenMatcherTest extends TestCaseBase {
 		nomatch("pro", matcher);
 	}
 
+	public void testRegex001() {
+		Rena<String> r = new Rena<String>();
+		OperationMatcher<String> matcher = r.regex("[0-9]+").regex("[a-z]+");
+
+		match("765pro", matcher, "765pro", 6, "", "");
+		nomatch("765", matcher);
+		nomatch("pro", matcher);
+	}
+
+	public void testRegex002() {
+		Rena<String> r = new Rena<String>();
+		OperationMatcher<String> matcher = r.regex("[0-9]+").regex("[a-z]+", (m, b, a) -> a + m);
+
+		match("765pro", matcher, "765pro", 6, "aaa", "aaa765pro");
+		nomatch("765", matcher);
+		nomatch("pro", matcher);
+	}
+
+	public void testRegex003() {
+		Rena<String> r = new Rena<String>("[ \t]+");
+		OperationMatcher<String> matcher = r.regex("[0-9]+").regex("[a-z]+", (m, b, a) -> a + m);
+
+		match("765pro", matcher, "765pro", 6, "", "765pro");
+		match("765  pro", matcher, "765  pro", 8, "", "765  pro");
+		nomatch("765", matcher);
+		nomatch("pro", matcher);
+	}
+
+	public void testString001() {
+		Rena<String> r = new Rena<String>();
+		OperationMatcher<String> matcher = r.string("765").string("pro");
+
+		match("765pro", matcher, "765pro", 6, "", "");
+		nomatch("765", matcher);
+		nomatch("pro", matcher);
+	}
+
+	public void testString002() {
+		Rena<String> r = new Rena<String>();
+		OperationMatcher<String> matcher = r.string("765").string("pro", (m, b, a) -> a + m);
+
+		match("765pro", matcher, "765pro", 6, "aaa", "aaa765pro");
+		nomatch("765", matcher);
+		nomatch("pro", matcher);
+	}
+
+	public void testString003() {
+		Rena<String> r = new Rena<String>("[ \t]+");
+		OperationMatcher<String> matcher = r.string("765").string("pro", (m, b, a) -> a + m);
+
+		match("765pro", matcher, "765pro", 6, "", "765pro");
+		match("765  pro", matcher, "765  pro", 8, "", "765  pro");
+		nomatch("765", matcher);
+		nomatch("pro", matcher);
+	}
+
 	public void testThenTimes001() {
 		Rena<String> r = new Rena<String>();
 		PatternMatcher<String> matcher = r.string("@").thenTimes(1, 3, r.regex("[0-9]"), (str, b, a) -> a + str);

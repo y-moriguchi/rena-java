@@ -8,9 +8,12 @@
  */
 package net.morilib.rena;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * An interface with successor matcher.
- * 
+ *
  * @author Yuichiro MORIGUCHI
  * @param <A> attribute
  */
@@ -19,7 +22,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * creates a matcher which succeeds the given matcher
 	 * and execute the given action when matches.
-	 * 
+	 *
 	 * @param matcher a successor matcher
 	 * @param action an action
 	 * @return a matcher
@@ -44,7 +47,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 							action != null ?
 									action.action(match, result2.getAttribute(), result1.getAttribute()) :
 										result1.getAttribute());
-				}			
+				}
 			}
 
 			public int skipSpace(String match, int index) {
@@ -55,12 +58,109 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 
 	/**
 	 * creates a matcher which succeeds the given matcher.
-	 * 
+	 *
 	 * @param matcher a successor matcher
 	 * @return a matcher
 	 */
 	public default ThenMatcher<A> then(final PatternMatcher<A> matcher) {
 		return then(matcher, (str, syn, inherit) -> syn);
+	}
+
+	/**
+	 * creates a matcher which matches the given string
+	 * and execute the given action when matches.
+	 *
+	 * @param matcher a successor matcher
+	 * @param action an action
+	 * @return a matcher
+	 */
+	public default ThenMatcher<A> string(String aString, final PatternAction<A> action) {
+		return new ThenMatcher<A>() {
+			public PatternResult<A> match(String match, int index, A attribute) {
+				PatternResult<A> result1 = ThenMatcher.this.match(match, index, attribute);
+				int lastIndexNew;
+
+				if(result1 == null) {
+					return null;
+				}
+				lastIndexNew = skipSpace(match, result1.getLastIndex());
+				if(match.startsWith(aString, lastIndexNew)) {
+					String matched = match.substring(index, lastIndexNew + aString.length());
+
+					return new PatternResult<A>(matched,
+							lastIndexNew + aString.length(),
+							action != null ?
+									action.action(matched, null, result1.getAttribute()) :
+										result1.getAttribute());
+				} else {
+					return null;
+				}
+			}
+
+			public int skipSpace(String match, int index) {
+				return ThenMatcher.this.skipSpace(match, index);
+			}
+		};
+	}
+
+	/**
+	 * creates a matcher which matches the given string.
+	 *
+	 * @param matcher a successor matcher
+	 * @return a matcher
+	 */
+	public default ThenMatcher<A> string(final String aString) {
+		return string(aString, null);
+	}
+
+	/**
+	 * creates a matcher which succeeds the given matcher
+	 * and execute the given action when matches.
+	 *
+	 * @param matcher a successor matcher
+	 * @param action an action
+	 * @return a matcher
+	 */
+	public default ThenMatcher<A> regex(final String regex, final PatternAction<A> action) {
+		final Pattern pattern = Pattern.compile(regex);
+
+		return new ThenMatcher<A>() {
+			public PatternResult<A> match(String match, int index, A attribute) {
+				PatternResult<A> result1 = ThenMatcher.this.match(match, index, attribute);
+				int lastIndexNew;
+
+				if(result1 == null) {
+					return null;
+				}
+				lastIndexNew = skipSpace(match, result1.getLastIndex());
+
+				String toMatch = match.substring(lastIndexNew);
+				Matcher matcher = pattern.matcher(toMatch);
+				if(matcher.lookingAt()) {
+					return new PatternResult<A>(match.substring(index, lastIndexNew + matcher.end()),
+							lastIndexNew + matcher.end(),
+							action != null ?
+									action.action(match, null, result1.getAttribute()) :
+										result1.getAttribute());
+				} else {
+					return null;
+				}
+			}
+
+			public int skipSpace(String match, int index) {
+				return ThenMatcher.this.skipSpace(match, index);
+			}
+		};
+	}
+
+	/**
+	 * creates a matcher which succeeds the given matcher.
+	 *
+	 * @param matcher a successor matcher
+	 * @return a matcher
+	 */
+	public default ThenMatcher<A> regex(final String regex) {
+		return regex(regex, null);
 	}
 
 	/**
@@ -98,7 +198,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * repeats at least the given count.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param count minimum of repetition
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
@@ -113,7 +213,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * repeats at least the given count.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param count minimum of repetition
 	 * @param pattern a matcher
 	 * @return a matcher
@@ -125,7 +225,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * repeats at most the given count.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param count maximum of repetition
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
@@ -140,7 +240,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * repeats at most the given count.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param count maximum of repetition
 	 * @param pattern a matcher
 	 * @return a matcher
@@ -152,7 +252,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * matches zero or one of the this matcher.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
 	 * @return a matcher
@@ -164,7 +264,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * matches zero or one of the this matcher.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @return a matcher
 	 */
@@ -175,7 +275,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * a shortcut of 'atLeast(0, action)'.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
 	 * @return a matcher
@@ -187,7 +287,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * a shortcut of 'atLeast(0)'.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @return a matcher
 	 */
@@ -198,7 +298,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * a shortcut of 'atLeast(1, action)'.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
 	 * @return a matcher
@@ -210,7 +310,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * a shortcut of 'atLeast(1)'.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @return a matcher
 	 */
@@ -221,7 +321,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * matches a string which is delimited by the given string.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param delimiter a string of delimiter
 	 * @param action an action to be invoked
@@ -236,7 +336,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * matches a string which is delimited by the given string.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param delimiter a string of delimiter
 	 * @return a matcher
