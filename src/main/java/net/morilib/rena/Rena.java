@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 /**
  * A class to create parser definition.
- * 
+ *
  * @author Yuichiro MORIGUCHI
  * @param <A> attribute
  */
@@ -98,7 +98,7 @@ public class Rena<A> {
 
 	/**
 	 * Constructs a class to create parser definition with a regular expression to ignore.
-	 * 
+	 *
 	 * @param toIgnore a regular expression to ignore
 	 */
 	public Rena(String toIgnore) {
@@ -108,7 +108,7 @@ public class Rena<A> {
 	/**
 	 * Constructs a class to create parser definition with keywords.<br>
 	 * A longest keyword will be matched.
-	 * 
+	 *
 	 * @param keys an array of keywords
 	 */
 	public Rena(String[] keys) {
@@ -121,7 +121,7 @@ public class Rena<A> {
 	/**
 	 * Constructs a class to create parser definition with keywords.<br>
 	 * A longest keyword will be matched.
-	 * 
+	 *
 	 * @param keys an array of keywords
 	 */
 	public Rena(List<String> keys) {
@@ -131,7 +131,7 @@ public class Rena<A> {
 	/**
 	 * Constructs a class to create parser definition with a regular expression to ignore and keywords.<br>
 	 * A longest keyword will be matched.
-	 * 
+	 *
 	 * @param toIgnore a regular expression to ignore
 	 * @param keys an array of keywords
 	 */
@@ -146,7 +146,7 @@ public class Rena<A> {
 	/**
 	 * Constructs a class to create parser definition with a regular expression to ignore and keywords.<br>
 	 * A longest keyword will be matched.
-	 * 
+	 *
 	 * @param toIgnore a regular expression to ignore
 	 * @param keys an array of keywords
 	 */
@@ -200,7 +200,7 @@ public class Rena<A> {
 
 	/**
 	 * wraps a given matcher and an action which executes when the pattern is matched.
-	 * 
+	 *
 	 * @param matcher a matcher by PatternMatcher interface
 	 * @param action an action to execute
 	 * @return a matcher
@@ -225,7 +225,7 @@ public class Rena<A> {
 
 	/**
 	 * wraps a given matcher.
-	 * 
+	 *
 	 * @param matcher a matcher by PatternMatcher interface
 	 * @return a matcher
 	 */
@@ -241,7 +241,7 @@ public class Rena<A> {
 	/**
 	 * creates a matcher which matches with a given string
 	 * and an action which executes when the pattern is matched.
-	 * 
+	 *
 	 * @param string a string to be matched
 	 * @param action an action to execute
 	 * @return a matcher
@@ -264,7 +264,7 @@ public class Rena<A> {
 
 	/**
 	 * creates a matcher which matches with a given string.
-	 * 
+	 *
 	 * @param string a string to be matched
 	 * @return a matcher
 	 */
@@ -275,7 +275,7 @@ public class Rena<A> {
 	/**
 	 * creates a matcher which matches with a regular expression
 	 * and an action which executes when the pattern is matched.
-	 * 
+	 *
 	 * @param regex a regular expression to be matched
 	 * @param action an action to execute
 	 * @return a matcher
@@ -304,7 +304,7 @@ public class Rena<A> {
 
 	/**
 	 * creates a matcher which matches with a regular expression.
-	 * 
+	 *
 	 * @param regex a regular expression to be matched
 	 * @return a matcher
 	 */
@@ -315,7 +315,7 @@ public class Rena<A> {
 	/**
 	 * creates a matcher which matches a given keyword.<br>
 	 * A longest keyword will be matched.
-	 * 
+	 *
 	 * @param key a string to be matched
 	 * @return a matcher
 	 */
@@ -336,7 +336,7 @@ public class Rena<A> {
 
 	/**
 	 * creates a matcher which matches if any keyword does not match.
-	 * 
+	 *
 	 * @return a matcher
 	 */
 	public LookaheadMatcher<A> notKey() {
@@ -354,7 +354,7 @@ public class Rena<A> {
 
 	/**
 	 * creates a matcher which matches newline.
-	 * 
+	 *
 	 * @return a matcher
 	 */
 	public LookaheadMatcher<A> br() {
@@ -365,7 +365,7 @@ public class Rena<A> {
 	 * creates a matcher which matches the given string.<br>
 	 * If a pattern to ignore is specified, the id which succeeds the pattern to ignore will only match.<br>
 	 * If keywords is specified, the id which succeeds the keywords will only match.
-	 * 
+	 *
 	 * @param id a string
 	 * @return a matcher
 	 */
@@ -391,7 +391,7 @@ public class Rena<A> {
 	/**
 	 * creates a matcher which matches float number.<br>
 	 * The sign is considered if the given signum is true.
-	 * 
+	 *
 	 * @param signum sign
 	 * @param action an action
 	 * @return a matcher
@@ -402,7 +402,7 @@ public class Rena<A> {
 
 	/**
 	 * creates a matcher which matches when one of the given matchers matches.
-	 * 
+	 *
 	 * @param arg1 a matcher
 	 * @param arg2 a matcher
 	 * @return a matcher of alternation
@@ -413,7 +413,7 @@ public class Rena<A> {
 
 	/**
 	 * creates a matcher which matches when one of the given matchers matches.
-	 * 
+	 *
 	 * @param arg1 a matcher
 	 * @param arg2 a matcher
 	 * @param arg3 a matcher
@@ -427,7 +427,7 @@ public class Rena<A> {
 
 	/**
 	 * creates a matcher which matches when one of the given matchers matches.
-	 * 
+	 *
 	 * @param arg1 a matcher
 	 * @param arg2 a matcher
 	 * @param arg3 a matcher
@@ -443,7 +443,7 @@ public class Rena<A> {
 
 	/**
 	 * creates a matcher which matches when one of matchers in the given list matches.
-	 * 
+	 *
 	 * @param args a list of matchers
 	 * @return a matcher of alternation
 	 */
@@ -468,7 +468,7 @@ public class Rena<A> {
 	 * @param countmax maximum of repetition
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
-	 * @param an initial attribute
+	 * @param init an initial attribute
 	 * @return a matcher
 	 */
 	public OperationMatcher<A> times(int countmin, int countmax, PatternMatcher<A> pattern,
@@ -508,11 +508,11 @@ public class Rena<A> {
 	/**
 	 * repeats the given pattern at least the given count.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param count minimum of repetition
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
-	 * @param an initial attribute
+	 * @param init an initial attribute
 	 * @return a matcher
 	 */
 	public OperationMatcher<A> atLeast(int count, PatternMatcher<A> pattern,
@@ -524,7 +524,7 @@ public class Rena<A> {
 	/**
 	 * repeats the given pattern at least the given count.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param count minimum of repetition
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
@@ -538,7 +538,7 @@ public class Rena<A> {
 	/**
 	 * repeats the given pattern at least the given count.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param count minimum of repetition
 	 * @param pattern a matcher
 	 * @return a matcher
@@ -550,11 +550,11 @@ public class Rena<A> {
 	/**
 	 * repeats the given pattern at most the given count.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param count maximum of repetition
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
-	 * @param an initial attribute
+	 * @param init an initial attribute
 	 * @return a matcher
 	 */
 	public OperationMatcher<A> atMost(int count, PatternMatcher<A> pattern,
@@ -566,7 +566,7 @@ public class Rena<A> {
 	/**
 	 * repeats the given pattern at most the given count.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param count maximum of repetition
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
@@ -580,7 +580,7 @@ public class Rena<A> {
 	/**
 	 * repeats the given pattern at most the given count.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param count maximum of repetition
 	 * @param pattern a matcher
 	 * @return a matcher
@@ -592,7 +592,7 @@ public class Rena<A> {
 	/**
 	 * matches zero or one of the given pattern.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
 	 * @return a matcher
@@ -604,7 +604,7 @@ public class Rena<A> {
 	/**
 	 * matches zero or one of the given pattern.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @return a matcher
 	 */
@@ -615,10 +615,10 @@ public class Rena<A> {
 	/**
 	 * a shortcut of 'atLeast(0, pattern, action, init)'.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
-	 * @param an initial attribute
+	 * @param init an initial attribute
 	 * @return a matcher
 	 */
 	public OperationMatcher<A> zeroOrMore(PatternMatcher<A> pattern,
@@ -630,7 +630,7 @@ public class Rena<A> {
 	/**
 	 * a shortcut of 'atLeast(0, pattern, action)'.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
 	 * @return a matcher
@@ -642,7 +642,7 @@ public class Rena<A> {
 	/**
 	 * a shortcut of 'atLeast(0, pattern)'.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @return a matcher
 	 */
@@ -653,10 +653,10 @@ public class Rena<A> {
 	/**
 	 * a shortcut of 'atLeast(1, pattern, action, init)'.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
-	 * @param an initial attribute
+	 * @param init an initial attribute
 	 * @return a matcher
 	 */
 	public OperationMatcher<A> oneOrMore(PatternMatcher<A> pattern,
@@ -668,7 +668,7 @@ public class Rena<A> {
 	/**
 	 * a shortcut of 'atLeast(1, pattern, action)'.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param action an action to be invoked
 	 * @return a matcher
@@ -680,7 +680,7 @@ public class Rena<A> {
 	/**
 	 * a shortcut of 'atLeast(1, pattern)'.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @return a matcher
 	 */
@@ -691,11 +691,11 @@ public class Rena<A> {
 	/**
 	 * matches a string which is delimited by the given pattern.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param delimiter a pattern of delimiter
 	 * @param action an action to be invoked
-	 * @param an initial attribute
+	 * @param init an initial attribute
 	 * @return a matcher
 	 */
 	public OperationMatcher<A> delimit(PatternMatcher<A> pattern, PatternMatcher<A> delimiter,
@@ -707,7 +707,7 @@ public class Rena<A> {
 	/**
 	 * matches a string which is delimited by the given string.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param delimiter a pattern of delimiter
 	 * @param action an action to be invoked
@@ -721,7 +721,7 @@ public class Rena<A> {
 	/**
 	 * matches a string which is delimited by the given string.<br>
 	 * This method is NOT backtracking.
-	 * 
+	 *
 	 * @param pattern a matcher
 	 * @param delimiter a pattern of delimiter
 	 * @return a matcher
@@ -732,7 +732,7 @@ public class Rena<A> {
 
 	/**
 	 * sets the attribute to the given value.
-	 * 
+	 *
 	 * @param attr an attribute to set
 	 * @return a matcher
 	 */
@@ -743,7 +743,8 @@ public class Rena<A> {
 	/**
 	 * A method which can refer a return value of the function itself.<br>
 	 * This method will be used for defining a pattern with recursion.
-	 * 
+	 *
+	 * @param <A> type of attribute
 	 * @param func a function whose argument is a return value itself.
 	 * @return PatternMatcher interface
 	 */
@@ -758,7 +759,8 @@ public class Rena<A> {
 	/**
 	 * A method which can refer a return values of the function itself.<br>
 	 * This method will be used for defining a pattern with recursion.
-	 * 
+	 *
+	 * @param <A> type of attribute
 	 * @param func1 a function whose first argument is a return values itself.
 	 * @param func2 a function whose second argument is a return values itself.
 	 * @return PatternMatcher interface
@@ -783,7 +785,8 @@ public class Rena<A> {
 	/**
 	 * A method which can refer a return values of the function itself.<br>
 	 * This method will be used for defining a pattern with recursion.
-	 * 
+	 *
+	 * @param <A> type of attribute
 	 * @param func1 a function whose first argument is a return values itself.
 	 * @param func2 a function whose second argument is a return values itself.
 	 * @param func3 a function whose third argument is a return values itself.
@@ -812,7 +815,8 @@ public class Rena<A> {
 	/**
 	 * A method which can refer a return values of the function itself.<br>
 	 * This method will be used for defining a pattern with recursion.
-	 * 
+	 *
+	 * @param <A> type of attribute
 	 * @param func1 a function whose first argument is a return values itself.
 	 * @param func2 a function whose second argument is a return values itself.
 	 * @param func3 a function whose third argument is a return values itself.
@@ -845,7 +849,8 @@ public class Rena<A> {
 	/**
 	 * A method which can refer a return values of the function itself.<br>
 	 * This method will be used for defining a pattern with recursion.
-	 * 
+	 *
+	 * @param <A> type of attribute
 	 * @param func1 a function whose first argument is a return values itself.
 	 * @param func2 a function whose second argument is a return values itself.
 	 * @param func3 a function whose third argument is a return values itself.

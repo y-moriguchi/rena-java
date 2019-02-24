@@ -10,7 +10,7 @@ package net.morilib.rena;
 
 /**
  * A class of matching result.
- * 
+ *
  * @author Yuichiro MORIGUCHI
  * @param <A> attribute
  */
@@ -22,7 +22,7 @@ public class PatternResult<A> {
 
 	/**
 	 * constructs matching result.
-	 * 
+	 *
 	 * @param match matched string
 	 * @param lastIndex last index of matching
 	 * @param attribute attribute
@@ -35,6 +35,7 @@ public class PatternResult<A> {
 
 	/**
 	 * gets matched string.
+	 * @return matched string
 	 */
 	public String getMatch() {
 		return match;
@@ -42,6 +43,7 @@ public class PatternResult<A> {
 
 	/**
 	 * gets start index of matching.
+	 * @return matched start index
 	 */
 	public int getStartIndex() {
 		return lastIndex - match.length();
@@ -49,6 +51,7 @@ public class PatternResult<A> {
 
 	/**
 	 * gets last index of matching.
+	 * @return matched last index
 	 */
 	public int getLastIndex() {
 		return lastIndex;
@@ -56,6 +59,7 @@ public class PatternResult<A> {
 
 	/**
 	 * gets an attribute.
+	 * @return attribute
 	 */
 	public A getAttribute() {
 		return attribute;

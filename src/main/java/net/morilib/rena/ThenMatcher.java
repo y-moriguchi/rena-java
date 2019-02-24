@@ -70,7 +70,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	 * creates a matcher which matches the given string
 	 * and execute the given action when matches.
 	 *
-	 * @param matcher a successor matcher
+	 * @param aString a successor string
 	 * @param action an action
 	 * @return a matcher
 	 */
@@ -106,7 +106,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * creates a matcher which matches the given string.
 	 *
-	 * @param matcher a successor matcher
+	 * @param aString a successor string
 	 * @return a matcher
 	 */
 	public default ThenMatcher<A> string(final String aString) {
@@ -117,7 +117,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	 * creates a matcher which succeeds the given matcher
 	 * and execute the given action when matches.
 	 *
-	 * @param matcher a successor matcher
+	 * @param regex a successor regex
 	 * @param action an action
 	 * @return a matcher
 	 */
@@ -156,7 +156,7 @@ public interface ThenMatcher<A> extends OrMatcher<A> {
 	/**
 	 * creates a matcher which succeeds the given matcher.
 	 *
-	 * @param matcher a successor matcher
+	 * @param regex a successor regex
 	 * @return a matcher
 	 */
 	public default ThenMatcher<A> regex(final String regex) {

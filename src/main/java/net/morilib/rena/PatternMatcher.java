@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 
 /**
  * A functional interface of matchers used in this framework.
- * 
+ *
  * @author Yuichiro MORIGUCHI
  * @param <A> attribute
  */
@@ -25,11 +25,11 @@ public interface PatternMatcher<A> {
 	 * matches the given string starts with the given index.<br>
 	 * returns an instance of PatternResult if it matches,
 	 * or returns null if it does not match.
-	 * 
+	 *
 	 * @param match a string to be matched
 	 * @param index an index to start matching
 	 * @param attribute inherited attribute
-	 * @return result of matching or null
+	 * @return matched attribute or null
 	 */
 	public PatternResult<A> match(String match, int index, A attribute);
 
@@ -37,10 +37,10 @@ public interface PatternMatcher<A> {
 	 * matches the given string starts with 0.<br>
 	 * returns an instance of PatternResult if it matches,
 	 * or returns null if it does not match.
-	 * 
+	 *
 	 * @param match a string to be matched
 	 * @param attribute inherited attribute
-	 * @return result of matching or null
+	 * @return matched attribute or null
 	 */
 	public default PatternResult<A> match(String match, A attribute) {
 		return match(match, 0, attribute);
@@ -48,10 +48,10 @@ public interface PatternMatcher<A> {
 
 	/**
 	 * An alias of match.
-	 * 
+	 *
 	 * @param match a string to be matched
 	 * @param attribute inherited attribute
-	 * @return
+	 * @return matched attribute or null
 	 */
 	public default PatternResult<A> parse(String match, A attribute) {
 		return match(match, 0, attribute);
@@ -61,11 +61,11 @@ public interface PatternMatcher<A> {
 	 * searches this pattern in the given string from the given index.<br>
 	 * returns an instance of PatternResult if the pattern found in the string from the index.
 	 * or returns null if the pattern is not found.
-	 * 
+	 *
 	 * @param match a string to be matched
 	 * @param index an index to start matching
 	 * @param attribute inherited attribute
-	 * @return result of matching or null
+	 * @return matched attribute or null
 	 */
 	public default PatternResult<A> parsePart(String match, int index, A attribute) {
 		PatternResult<A> result;
@@ -83,11 +83,10 @@ public interface PatternMatcher<A> {
 	 * searches this pattern in the given string.<br>
 	 * returns an instance of PatternResult if the pattern found in the string.
 	 * or returns null if the pattern is not found.
-	 * 
+	 *
 	 * @param match a string to be matched
-	 * @param index an index to start matching
 	 * @param attribute inherited attribute
-	 * @return result of matching or null
+	 * @return matched attribute or null
 	 */
 	public default PatternResult<A> parsePart(String match, A attribute) {
 		return parsePart(match, 0, attribute);
@@ -96,7 +95,7 @@ public interface PatternMatcher<A> {
 	/**
 	 * searches all patterns in the given string from the given index.<br>
 	 * returns accumulated attribute by the given action.
-	 * 
+	 *
 	 * @param match a string to be matched
 	 * @param index an index to start matching
 	 * @param init initial attribute
@@ -122,7 +121,7 @@ public interface PatternMatcher<A> {
 	/**
 	 * searches all patterns in the given string.<br>
 	 * returns accumulated attribute by the given action.
-	 * 
+	 *
 	 * @param match a string to be matched
 	 * @param init initial attribute
 	 * @param action an accumulator
@@ -135,7 +134,7 @@ public interface PatternMatcher<A> {
 	/**
 	 * searches all patterns in the given string from the given index.<br>
 	 * returns a list of all attributes.
-	 * 
+	 *
 	 * @param match a string to be matched
 	 * @param index an index to start matching
 	 * @return a list of all attributes
@@ -159,7 +158,7 @@ public interface PatternMatcher<A> {
 	/**
 	 * searches all patterns in the given string.<br>
 	 * returns a list of all attributes.
-	 * 
+	 *
 	 * @param match a string to be matched
 	 * @return a list of all attributes
 	 */
