@@ -1,9 +1,9 @@
 # Rena-Java
-Rena-Java is a library of parsing texts. Rena-Java makes parsing text easily.  
+Rena-Java is a library of parsing texts. Rena-Java makes parsing text easily.
 Rena-Java can treat recursion of pattern, hence Rena-Java can parse languages which described top down parsing
-like arithmetic expressions and so on.  
-Rena-Java can also treat synthesized and inherited attributes.  
-'Rena' is an acronym of REpetation (or REcursion) Notation API.  
+like arithmetic expressions and so on.
+Rena-Java can also treat synthesized and inherited attributes.
+'Rena' is an acronym of REpetation (or REcursion) Notation API.
 
 ## Examples
 
@@ -26,3 +26,6 @@ System.out.println(expr.parse("1+2*3", 0).getAttribute());
 // outputs 1
 System.out.println(expr.parse("4-6/2", 0).getAttribute());
 ```
+
+### Document
+[Document](http://rena.morilib.net/java/index.html) is available.
